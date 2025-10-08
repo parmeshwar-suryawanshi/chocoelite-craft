@@ -2,6 +2,73 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  :root {
+    --luxury-brown: 30 30% 25%;
+    --luxury-gold: 45 90% 55%;
+    --luxury-cream: 40 30% 96%;
+    
+    --background: 0 0% 100%;
+    --foreground: 30 30% 15%;
+    --card: 0 0% 100%;
+    --card-foreground: 30 30% 15%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 30 30% 15%;
+    --primary: 30 30% 25%;
+    --primary-foreground: 40 30% 96%;
+    --secondary: 280 70% 50%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 40 20% 96%;
+    --muted-foreground: 30 20% 40%;
+    --accent: 320 70% 55%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 30 20% 90%;
+    --input: 30 20% 90%;
+    --ring: 30 30% 25%;
+    --radius: 0.5rem;
+  }
+}
+
+@layer utilities {
+  .gradient-luxury {
+    background: linear-gradient(135deg, hsl(var(--luxury-brown)), hsl(var(--secondary)));
+  }
+  
+  .text-gradient-luxury {
+    background: linear-gradient(135deg, hsl(var(--luxury-brown)), hsl(var(--secondary)));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .text-luxury-brown {
+    color: hsl(var(--luxury-brown));
+  }
+  
+  .text-luxury-gold {
+    color: hsl(var(--luxury-gold));
+  }
+  
+  .bg-luxury-cream {
+    background-color: hsl(var(--luxury-cream));
+  }
+  
+  .hover-lift {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.15);
+  }
+  
+  .shadow-glow {
+    box-shadow: 0 10px 40px -10px hsl(var(--secondary) / 0.4);
+  }
+}
+
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
 All colors MUST be HSL.
 */

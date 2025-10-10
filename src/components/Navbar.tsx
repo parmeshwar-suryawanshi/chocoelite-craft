@@ -4,7 +4,6 @@ import { Menu, X, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useCart } from "@/contexts/CartContext";
-import brandLogo from "@/assets/brand-logo.jpg";
 import monogramLogo from "@/assets/monogram-logo.jpg";
 
 const Navbar = () => {
@@ -46,13 +45,17 @@ const Navbar = () => {
             <img 
               src={monogramLogo} 
               alt="ChocoElite Monogram" 
-              className="h-10 w-10 md:h-12 md:w-12 transition-transform duration-300 group-hover:scale-110 drop-shadow-lg"
+              className="h-10 w-10 md:h-12 md:w-12 transition-transform duration-300 group-hover:scale-110 drop-shadow-lg mix-blend-lighten"
+              style={{ filter: 'drop-shadow(0 0 10px rgba(139, 92, 246, 0.5))' }}
             />
-            <img 
-              src={brandLogo} 
-              alt="ChocoElite Brand" 
-              className="h-8 md:h-10 hidden sm:block transition-transform duration-300 group-hover:scale-105 drop-shadow-lg"
-            />
+            <div className="flex flex-col">
+              <span className="text-2xl md:text-3xl font-display font-bold text-white drop-shadow-lg">
+                ChocoElite
+              </span>
+              <span className="text-[10px] md:text-xs text-white/90 font-medium tracking-wider -mt-1">
+                FRUIT AT EVERY BITE
+              </span>
+            </div>
           </Link>
 
           {/* Desktop Menu */}

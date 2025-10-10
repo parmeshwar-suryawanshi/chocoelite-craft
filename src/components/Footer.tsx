@@ -2,65 +2,97 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-primary text-primary-foreground py-12">
-      <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-          <div>
-            <h3 className="text-2xl font-display font-bold mb-4 text-white">ChocoElite</h3>
-            <p className="text-primary-foreground/80 leading-relaxed">
+    <footer className="relative bg-gradient-to-br from-purple-900 via-purple-800 to-pink-900 text-white overflow-hidden">
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0 opacity-20">
+        <div className="absolute top-20 left-10 w-64 h-64 rounded-full bg-gradient-to-r from-white/30 to-transparent blur-3xl animate-pulse-slow" />
+        <div className="absolute bottom-20 right-10 w-80 h-80 rounded-full bg-gradient-to-l from-pink-500/30 to-transparent blur-3xl animate-pulse-slow" style={{ animationDelay: "1s" }} />
+      </div>
+
+      {/* Grid Pattern Overlay */}
+      <div className="absolute inset-0 opacity-5">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
+          backgroundSize: '50px 50px'
+        }} />
+      </div>
+
+      <div className="container mx-auto px-4 py-16 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+          {/* Brand Section */}
+          <div className="md:col-span-2">
+            <h3 className="text-4xl font-display font-bold mb-4 text-white bg-gradient-to-r from-white to-pink-200 bg-clip-text text-transparent">
+              ChocoElite
+            </h3>
+            <p className="text-lg text-white/90 leading-relaxed mb-6 max-w-md">
               Guilt-Free Indulgence, Pure Fruit Pleasure. Experience chocolate reimagined
-              with real fruits.
+              with real fruits - a luxurious fusion of cocoa and nature.
             </p>
+            <div className="flex items-center gap-2 text-sm text-white/80">
+              <div className="w-12 h-0.5 bg-gradient-to-r from-pink-400 to-transparent"></div>
+              <span className="font-medium tracking-wide">FRUIT AT EVERY BITE</span>
+            </div>
           </div>
 
+          {/* Quick Links */}
           <div>
-            <h4 className="text-lg font-semibold mb-4 text-white">Quick Links</h4>
-            <nav className="space-y-2">
+            <h4 className="text-xl font-bold mb-6 text-white relative inline-block">
+              Quick Links
+              <div className="absolute -bottom-2 left-0 w-12 h-1 bg-gradient-to-r from-pink-400 to-purple-400 rounded-full"></div>
+            </h4>
+            <nav className="space-y-3">
               <a
                 href="#about"
-                className="block text-primary-foreground/80 hover:text-white transition-colors"
+                className="block text-white/80 hover:text-white transition-all duration-300 hover:translate-x-2 font-medium"
               >
-                About Us
+                → About Us
               </a>
               <a
                 href="#products"
-                className="block text-primary-foreground/80 hover:text-white transition-colors"
+                className="block text-white/80 hover:text-white transition-all duration-300 hover:translate-x-2 font-medium"
               >
-                Our Products
+                → Our Products
               </a>
               <a
                 href="#gallery"
-                className="block text-primary-foreground/80 hover:text-white transition-colors"
+                className="block text-white/80 hover:text-white transition-all duration-300 hover:translate-x-2 font-medium"
               >
-                Gallery
+                → Gallery
               </a>
               <a
                 href="#contact"
-                className="block text-primary-foreground/80 hover:text-white transition-colors"
+                className="block text-white/80 hover:text-white transition-all duration-300 hover:translate-x-2 font-medium"
               >
-                Contact
+                → Contact
               </a>
             </nav>
           </div>
 
+          {/* Contact Info */}
           <div>
-            <h4 className="text-lg font-semibold mb-4 text-white">Contact Info</h4>
-            <address className="not-italic space-y-2 text-primary-foreground/80">
-              <p>Pune, Maharashtra, India</p>
-              <p>
-                Phone:{" "}
+            <h4 className="text-xl font-bold mb-6 text-white relative inline-block">
+              Get in Touch
+              <div className="absolute -bottom-2 left-0 w-12 h-1 bg-gradient-to-r from-pink-400 to-purple-400 rounded-full"></div>
+            </h4>
+            <address className="not-italic space-y-4 text-white/80">
+              <p className="flex items-start gap-2">
+                <span className="text-pink-300 mt-1">📍</span>
+                <span>Pune, Maharashtra, India</span>
+              </p>
+              <p className="flex items-start gap-2">
+                <span className="text-pink-300 mt-1">📞</span>
                 <a
                   href="tel:+918042781962"
-                  className="hover:text-white transition-colors"
+                  className="hover:text-white transition-colors font-medium"
                 >
                   +91 8042781962
                 </a>
               </p>
-              <p>
-                Email:{" "}
+              <p className="flex items-start gap-2">
+                <span className="text-pink-300 mt-1">✉️</span>
                 <a
                   href="mailto:yash_agrodairyfoodpark@rediffmail.com"
-                  className="hover:text-white transition-colors break-all"
+                  className="hover:text-white transition-colors break-all font-medium"
                 >
                   yash_agrodairyfoodpark@rediffmail.com
                 </a>
@@ -69,10 +101,23 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="border-t border-primary-foreground/20 pt-8 text-center text-primary-foreground/80">
-          <p>&copy; {currentYear} ChocoElite. All rights reserved.</p>
+        {/* Bottom Bar */}
+        <div className="border-t border-white/20 pt-8 mt-8">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="text-white/70 text-sm">
+              &copy; {currentYear} ChocoElite. All rights reserved.
+            </p>
+            <div className="flex gap-6 text-sm text-white/70">
+              <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
+              <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
+              <a href="#" className="hover:text-white transition-colors">Cookies</a>
+            </div>
+          </div>
         </div>
       </div>
+
+      {/* Decorative Elements */}
+      <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500"></div>
     </footer>
   );
 };

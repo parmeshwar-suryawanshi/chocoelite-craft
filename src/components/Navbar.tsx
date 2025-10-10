@@ -4,6 +4,8 @@ import { Menu, X, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useCart } from "@/contexts/CartContext";
+import brandLogo from "@/assets/brand-logo.jpg";
+import monogramLogo from "@/assets/monogram-logo.jpg";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -29,83 +31,110 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         isScrolled
-          ? "bg-background/95 backdrop-blur-md shadow-md"
-          : "bg-transparent"
+          ? "bg-background/98 backdrop-blur-xl shadow-2xl border-b border-white/10"
+          : "bg-gradient-to-b from-black/40 via-black/20 to-transparent backdrop-blur-lg"
       }`}
     >
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
-          <button
-            onClick={() => scrollToSection("hero")}
-            className="flex items-center gap-2"
+          <Link
+            to="/"
+            className="flex items-center gap-3 group"
           >
-            <div className="text-2xl md:text-3xl font-display font-bold text-gradient">
-              ChocoElite
-            </div>
-          </button>
+            <img 
+              src={monogramLogo} 
+              alt="ChocoElite Monogram" 
+              className="h-10 w-10 md:h-12 md:w-12 transition-transform duration-300 group-hover:scale-110 drop-shadow-lg"
+            />
+            <img 
+              src={brandLogo} 
+              alt="ChocoElite Brand" 
+              className="h-8 md:h-10 hidden sm:block transition-transform duration-300 group-hover:scale-105 drop-shadow-lg"
+            />
+          </Link>
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex items-center gap-6">
-            <Link to="/shop" className="text-foreground/80 hover:text-luxury-brown transition-colors font-medium">Shop</Link>
-            <Link to="/about" className="text-foreground/80 hover:text-luxury-brown transition-colors font-medium">About</Link>
-            <Link to="/blog" className="text-foreground/80 hover:text-luxury-brown transition-colors font-medium">Blog</Link>
-            <Link to="/contact" className="text-foreground/80 hover:text-luxury-brown transition-colors font-medium">Contact</Link>
-            <Button onClick={() => navigate("/cart")} variant="ghost" size="sm" className="relative">
+          <div className="hidden md:flex items-center gap-8">
+            <Link to="/shop" className="relative text-white font-semibold hover:text-white/90 transition-all duration-300 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 hover:after:w-full after:bg-white after:transition-all after:duration-300 drop-shadow-lg">
+              Shop
+            </Link>
+            <Link to="/about" className="relative text-white font-semibold hover:text-white/90 transition-all duration-300 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 hover:after:w-full after:bg-white after:transition-all after:duration-300 drop-shadow-lg">
+              About
+            </Link>
+            <Link to="/blog" className="relative text-white font-semibold hover:text-white/90 transition-all duration-300 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 hover:after:w-full after:bg-white after:transition-all after:duration-300 drop-shadow-lg">
+              Blog
+            </Link>
+            <Link to="/contact" className="relative text-white font-semibold hover:text-white/90 transition-all duration-300 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 hover:after:w-full after:bg-white after:transition-all after:duration-300 drop-shadow-lg">
+              Contact
+            </Link>
+            <Button 
+              onClick={() => navigate("/cart")} 
+              variant="ghost" 
+              size="sm" 
+              className="relative bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white border border-white/20 hover:border-white/40 transition-all duration-300 hover:scale-105 shadow-lg"
+            >
               <ShoppingCart className="h-5 w-5" />
               {totalItems > 0 && (
-                <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 gradient-luxury text-white">{totalItems}</Badge>
+                <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 bg-gradient-to-r from-purple-500 to-pink-500 text-white border-2 border-white shadow-lg animate-pulse">{totalItems}</Badge>
               )}
             </Button>
           </div>
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden p-2"
+            className="md:hidden p-2 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20 hover:bg-white/20 transition-all duration-300"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label="Toggle menu"
           >
             {isMobileMenuOpen ? (
-              <X className="h-6 w-6 text-foreground" />
+              <X className="h-6 w-6 text-white drop-shadow-lg" />
             ) : (
-              <Menu className="h-6 w-6 text-foreground" />
+              <Menu className="h-6 w-6 text-white drop-shadow-lg" />
             )}
           </button>
         </div>
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden mt-4 pb-4 space-y-4 animate-fade-in-up">
-            <button
-              onClick={() => scrollToSection("about")}
-              className="block w-full text-left py-2 text-foreground/80 hover:text-secondary transition-colors font-medium"
+          <div className="md:hidden mt-4 pb-4 space-y-3 bg-black/30 backdrop-blur-xl rounded-2xl p-4 border border-white/10 shadow-2xl animate-fade-in-up">
+            <Link
+              to="/shop"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="block w-full text-left py-3 px-4 text-white font-semibold hover:bg-white/10 rounded-lg transition-all duration-300"
+            >
+              Shop
+            </Link>
+            <Link
+              to="/about"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="block w-full text-left py-3 px-4 text-white font-semibold hover:bg-white/10 rounded-lg transition-all duration-300"
             >
               About
-            </button>
-            <button
-              onClick={() => scrollToSection("products")}
-              className="block w-full text-left py-2 text-foreground/80 hover:text-secondary transition-colors font-medium"
+            </Link>
+            <Link
+              to="/blog"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="block w-full text-left py-3 px-4 text-white font-semibold hover:bg-white/10 rounded-lg transition-all duration-300"
             >
-              Products
-            </button>
-            <button
-              onClick={() => scrollToSection("gallery")}
-              className="block w-full text-left py-2 text-foreground/80 hover:text-secondary transition-colors font-medium"
-            >
-              Gallery
-            </button>
-            <button
-              onClick={() => scrollToSection("contact")}
-              className="block w-full text-left py-2 text-foreground/80 hover:text-secondary transition-colors font-medium"
+              Blog
+            </Link>
+            <Link
+              to="/contact"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="block w-full text-left py-3 px-4 text-white font-semibold hover:bg-white/10 rounded-lg transition-all duration-300"
             >
               Contact
-            </button>
+            </Link>
             <Button
-              onClick={() => scrollToSection("contact")}
-              className="w-full gradient-purple-pink text-white"
+              onClick={() => {
+                navigate("/cart");
+                setIsMobileMenuOpen(false);
+              }}
+              className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold hover:from-purple-600 hover:to-pink-600 shadow-lg"
             >
-              Get Quote
+              View Cart ({totalItems})
             </Button>
           </div>
         )}

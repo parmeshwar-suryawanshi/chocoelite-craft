@@ -27,35 +27,23 @@ const CraftVideo = () => {
                   alt="Chocolate making process"
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-black/20 flex items-center justify-center group-hover:bg-black/50 transition-all duration-300">
-                  <div className="text-center">
-                    <Button
-                      size="lg"
-                      onClick={() => setIsPlaying(true)}
-                      className="w-24 h-24 rounded-full bg-white hover:bg-white/90 text-luxury-brown shadow-2xl hover:scale-110 transition-transform duration-300 mb-4"
-                    >
-                      <Play className="h-10 w-10 ml-1" fill="currentColor" />
-                    </Button>
-                    <p className="text-white text-lg font-semibold drop-shadow-lg">Watch the Full Process</p>
-                    <p className="text-white/80 text-sm mt-1">25 min documentary</p>
-                  </div>
+                <div className="absolute inset-0 bg-black/40 flex items-center justify-center group-hover:bg-black/50 transition-colors">
+                  <Button
+                    size="lg"
+                    onClick={() => setIsPlaying(true)}
+                    className="w-20 h-20 rounded-full bg-white hover:bg-white/90 text-luxury-brown shadow-2xl"
+                  >
+                    <Play className="h-8 w-8 ml-1" />
+                  </Button>
                 </div>
               </>
             ) : (
-              <iframe
-                className="w-full h-full"
-                src="https://www.youtube.com/embed/jbNnsiP4Rhg?autoplay=1&rel=0"
-                title="Chocolate Making Process"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
+              <div className="w-full h-full bg-black flex items-center justify-center">
+                <p className="text-white text-xl">
+                  Video player would be integrated here with actual video content
+                </p>
+              </div>
             )}
-          </div>
-
-          <div className="text-center mt-6">
-            <p className="text-sm text-muted-foreground">
-              🎬 Experience the complete journey from cacao bean to premium chocolate bar
-            </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">

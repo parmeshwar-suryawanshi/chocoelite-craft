@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import SEO from '@/components/SEO';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import ProductCard from '@/components/ProductCard';
@@ -29,7 +31,7 @@ const Shop = () => {
         keywords="buy chocolate online, premium chocolate, fruit chocolate, dark chocolate, milk chocolate, white chocolate, vegan chocolate"
         url="https://chocoelite.lovable.app/shop"
       />
-      
+      <Navbar />
       <div className="min-h-screen pt-24 pb-20">
         <div className="container mx-auto px-4">
           {/* Hero Section */}
@@ -104,6 +106,7 @@ const Shop = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 };

@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import SEO from '@/components/SEO';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -72,7 +74,7 @@ const ContactPage = () => {
         keywords="contact chocoelite, bulk chocolate order, corporate gifting, chocolate inquiry"
         url="https://chocoelite.lovable.app/contact"
       />
-
+      <Navbar />
       <div className="min-h-screen pt-24 pb-20">
         {/* Hero Section */}
         <section className="py-20 gradient-luxury text-white">
@@ -231,6 +233,7 @@ const ContactPage = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 };

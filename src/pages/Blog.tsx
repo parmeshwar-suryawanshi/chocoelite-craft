@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
 import SEO from '@/components/SEO';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, User, ArrowRight } from 'lucide-react';
@@ -15,7 +17,7 @@ const Blog = () => {
         keywords="chocolate blog, chocolate recipes, dark chocolate benefits, chocolate pairing, chocolate making process"
         url="https://chocoelite.lovable.app/blog"
       />
-
+      <Navbar />
       <div className="min-h-screen pt-24 pb-20">
         <div className="container mx-auto px-4">
           {/* Hero Section */}
@@ -123,6 +125,7 @@ const Blog = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 };

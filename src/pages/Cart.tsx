@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
 import SEO from '@/components/SEO';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -28,6 +30,7 @@ const Cart = () => {
     return (
       <>
         <SEO title="Shopping Cart | ChocoElite" />
+        <Navbar />
         <div className="min-h-screen pt-24 flex items-center justify-center">
           <div className="text-center">
             <ShoppingBag className="h-24 w-24 mx-auto mb-6 text-muted-foreground" />
@@ -42,6 +45,7 @@ const Cart = () => {
             </Link>
           </div>
         </div>
+        <Footer />
       </>
     );
   }
@@ -52,7 +56,7 @@ const Cart = () => {
         title="Shopping Cart | ChocoElite"
         description="Review your selected premium chocolates and proceed to checkout"
       />
-
+      <Navbar />
       <div className="min-h-screen pt-24 pb-20">
         <div className="container mx-auto px-4">
           <h1 className="text-4xl md:text-5xl font-display font-bold mb-8 text-gradient-luxury">
@@ -185,6 +189,7 @@ const Cart = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 };

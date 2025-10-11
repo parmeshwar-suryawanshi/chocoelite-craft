@@ -1,4 +1,6 @@
 import SEO from '@/components/SEO';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 import { Card, CardContent } from '@/components/ui/card';
 import { Heart, Leaf, Users, Award, Target, Eye } from 'lucide-react';
 
@@ -34,7 +36,7 @@ const AboutUs = () => {
         keywords="about chocoelite, chocolate company, sustainable chocolate, ethical chocolate, chocolate makers"
         url="https://chocoelite.lovable.app/about"
       />
-
+      <Navbar />
       <div className="min-h-screen pt-24 pb-20">
         {/* Hero Section */}
         <section className="relative py-20 gradient-luxury overflow-hidden">
@@ -193,6 +195,7 @@ const AboutUs = () => {
           </div>
         </section>
       </div>
+      <Footer />
     </>
   );
 };

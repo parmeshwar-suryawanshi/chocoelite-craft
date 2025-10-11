@@ -1,5 +1,7 @@
 import { useParams, Link } from 'react-router-dom';
 import SEO from '@/components/SEO';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, User, ArrowLeft, Share2 } from 'lucide-react';
@@ -12,14 +14,18 @@ const BlogPost = () => {
 
   if (!post) {
     return (
-      <div className="min-h-screen pt-24 flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-4xl font-display font-bold mb-4">Post Not Found</h1>
-          <Link to="/blog">
-            <Button className="gradient-luxury text-white">Back to Blog</Button>
-          </Link>
+      <>
+        <Navbar />
+        <div className="min-h-screen pt-24 flex items-center justify-center">
+          <div className="text-center">
+            <h1 className="text-4xl font-display font-bold mb-4">Post Not Found</h1>
+            <Link to="/blog">
+              <Button className="gradient-luxury text-white">Back to Blog</Button>
+            </Link>
+          </div>
         </div>
-      </div>
+        <Footer />
+      </>
     );
   }
 
@@ -40,7 +46,7 @@ const BlogPost = () => {
         url={`https://chocoelite.lovable.app/blog/${post.slug}`}
         type="article"
       />
-
+      <Navbar />
       <article className="min-h-screen pt-24 pb-20">
         <div className="container mx-auto px-4">
           {/* Back Button */}
@@ -147,6 +153,7 @@ const BlogPost = () => {
           </div>
         </div>
       </article>
+      <Footer />
     </>
   );
 };

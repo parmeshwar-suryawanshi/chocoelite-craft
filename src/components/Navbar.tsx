@@ -49,10 +49,14 @@ const Navbar = () => {
               style={{ filter: 'drop-shadow(0 0 10px rgba(139, 92, 246, 0.5))' }}
             />
             <div className="flex flex-col">
-              <span className="text-2xl md:text-3xl font-display font-bold text-white drop-shadow-lg">
+              <span className={`text-2xl md:text-3xl font-display font-bold transition-colors duration-300 ${
+                isScrolled ? "text-foreground" : "text-white drop-shadow-lg"
+              }`}>
                 ChocoElite
               </span>
-              <span className="text-[10px] md:text-xs text-white/90 font-medium tracking-wider -mt-1">
+              <span className={`text-[10px] md:text-xs font-medium tracking-wider -mt-1 transition-colors duration-300 ${
+                isScrolled ? "text-muted-foreground" : "text-white/90"
+              }`}>
                 FRUIT AT EVERY BITE
               </span>
             </div>
@@ -60,23 +64,43 @@ const Navbar = () => {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-8">
-            <Link to="/shop" className="relative text-white font-semibold hover:text-white/90 transition-all duration-300 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 hover:after:w-full after:bg-white after:transition-all after:duration-300 drop-shadow-lg">
+            <Link to="/shop" className={`relative font-semibold transition-all duration-300 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 hover:after:w-full after:transition-all after:duration-300 ${
+              isScrolled 
+                ? "text-foreground hover:text-foreground/80 after:bg-foreground" 
+                : "text-white hover:text-white/90 after:bg-white drop-shadow-lg"
+            }`}>
               Shop
             </Link>
-            <Link to="/about" className="relative text-white font-semibold hover:text-white/90 transition-all duration-300 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 hover:after:w-full after:bg-white after:transition-all after:duration-300 drop-shadow-lg">
+            <Link to="/about" className={`relative font-semibold transition-all duration-300 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 hover:after:w-full after:transition-all after:duration-300 ${
+              isScrolled 
+                ? "text-foreground hover:text-foreground/80 after:bg-foreground" 
+                : "text-white hover:text-white/90 after:bg-white drop-shadow-lg"
+            }`}>
               About
             </Link>
-            <Link to="/blog" className="relative text-white font-semibold hover:text-white/90 transition-all duration-300 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 hover:after:w-full after:bg-white after:transition-all after:duration-300 drop-shadow-lg">
+            <Link to="/blog" className={`relative font-semibold transition-all duration-300 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 hover:after:w-full after:transition-all after:duration-300 ${
+              isScrolled 
+                ? "text-foreground hover:text-foreground/80 after:bg-foreground" 
+                : "text-white hover:text-white/90 after:bg-white drop-shadow-lg"
+            }`}>
               Blog
             </Link>
-            <Link to="/contact" className="relative text-white font-semibold hover:text-white/90 transition-all duration-300 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 hover:after:w-full after:bg-white after:transition-all after:duration-300 drop-shadow-lg">
+            <Link to="/contact" className={`relative font-semibold transition-all duration-300 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 hover:after:w-full after:transition-all after:duration-300 ${
+              isScrolled 
+                ? "text-foreground hover:text-foreground/80 after:bg-foreground" 
+                : "text-white hover:text-white/90 after:bg-white drop-shadow-lg"
+            }`}>
               Contact
             </Link>
             <Button 
               onClick={() => navigate("/cart")} 
               variant="ghost" 
               size="sm" 
-              className="relative bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white border border-white/20 hover:border-white/40 transition-all duration-300 hover:scale-105 shadow-lg"
+              className={`relative backdrop-blur-sm transition-all duration-300 hover:scale-105 shadow-lg ${
+                isScrolled 
+                  ? "bg-foreground/10 hover:bg-foreground/20 text-foreground border border-foreground/20 hover:border-foreground/40"
+                  : "bg-white/10 hover:bg-white/20 text-white border border-white/20 hover:border-white/40"
+              }`}
             >
               <ShoppingCart className="h-5 w-5" />
               {totalItems > 0 && (
@@ -87,46 +111,70 @@ const Navbar = () => {
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden p-2 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20 hover:bg-white/20 transition-all duration-300"
+            className={`md:hidden p-2 backdrop-blur-sm rounded-lg border transition-all duration-300 ${
+              isScrolled
+                ? "bg-foreground/10 border-foreground/20 hover:bg-foreground/20"
+                : "bg-white/10 border-white/20 hover:bg-white/20"
+            }`}
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label="Toggle menu"
           >
             {isMobileMenuOpen ? (
-              <X className="h-6 w-6 text-white drop-shadow-lg" />
+              <X className={`h-6 w-6 transition-colors duration-300 ${
+                isScrolled ? "text-foreground" : "text-white drop-shadow-lg"
+              }`} />
             ) : (
-              <Menu className="h-6 w-6 text-white drop-shadow-lg" />
+              <Menu className={`h-6 w-6 transition-colors duration-300 ${
+                isScrolled ? "text-foreground" : "text-white drop-shadow-lg"
+              }`} />
             )}
           </button>
         </div>
 
-        {/* Mobile Menu */}
+          {/* Mobile Menu */}
         {isMobileMenuOpen && (
           <div className="md:hidden mt-4 pb-4 space-y-3 bg-black/30 backdrop-blur-xl rounded-2xl p-4 border border-white/10 shadow-2xl animate-fade-in-up">
             <Link
               to="/shop"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="block w-full text-left py-3 px-4 text-white font-semibold hover:bg-white/10 rounded-lg transition-all duration-300"
+              className={`block w-full text-left py-3 px-4 font-semibold rounded-lg transition-all duration-300 ${
+                isScrolled 
+                  ? "text-foreground hover:bg-foreground/10" 
+                  : "text-white hover:bg-white/10"
+              }`}
             >
               Shop
             </Link>
             <Link
               to="/about"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="block w-full text-left py-3 px-4 text-white font-semibold hover:bg-white/10 rounded-lg transition-all duration-300"
+              className={`block w-full text-left py-3 px-4 font-semibold rounded-lg transition-all duration-300 ${
+                isScrolled 
+                  ? "text-foreground hover:bg-foreground/10" 
+                  : "text-white hover:bg-white/10"
+              }`}
             >
               About
             </Link>
             <Link
               to="/blog"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="block w-full text-left py-3 px-4 text-white font-semibold hover:bg-white/10 rounded-lg transition-all duration-300"
+              className={`block w-full text-left py-3 px-4 font-semibold rounded-lg transition-all duration-300 ${
+                isScrolled 
+                  ? "text-foreground hover:bg-foreground/10" 
+                  : "text-white hover:bg-white/10"
+              }`}
             >
               Blog
             </Link>
             <Link
               to="/contact"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="block w-full text-left py-3 px-4 text-white font-semibold hover:bg-white/10 rounded-lg transition-all duration-300"
+              className={`block w-full text-left py-3 px-4 font-semibold rounded-lg transition-all duration-300 ${
+                isScrolled 
+                  ? "text-foreground hover:bg-foreground/10" 
+                  : "text-white hover:bg-white/10"
+              }`}
             >
               Contact
             </Link>

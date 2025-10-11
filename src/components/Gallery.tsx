@@ -42,16 +42,18 @@ const Gallery = () => {
           {galleryImages.map((image, index) => (
             <div
               key={index}
-              className="group relative overflow-hidden rounded-2xl shadow-2xl hover-lift h-[400px]"
+              className="group relative overflow-hidden rounded-2xl shadow-2xl hover-lift bg-muted/20"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
-              <img
-                src={image.url}
-                alt={image.alt}
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                loading="lazy"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-purple-900/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="aspect-[4/3] flex items-center justify-center p-4">
+                <img
+                  src={image.url}
+                  alt={image.alt}
+                  className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
+                  loading="lazy"
+                />
+              </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-purple-900/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
             </div>
           ))}
         </div>

@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import SEO from '@/components/SEO';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
@@ -20,14 +22,18 @@ const ProductDetail = () => {
 
   if (!product) {
     return (
-      <div className="min-h-screen pt-24 flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-4xl font-display font-bold mb-4">Product Not Found</h1>
-          <Link to="/shop">
-            <Button className="gradient-luxury text-white">Back to Shop</Button>
-          </Link>
+      <>
+        <Navbar />
+        <div className="min-h-screen pt-24 flex items-center justify-center">
+          <div className="text-center">
+            <h1 className="text-4xl font-display font-bold mb-4">Product Not Found</h1>
+            <Link to="/shop">
+              <Button className="gradient-luxury text-white">Back to Shop</Button>
+            </Link>
+          </div>
         </div>
-      </div>
+        <Footer />
+      </>
     );
   }
 
@@ -62,7 +68,7 @@ const ProductDetail = () => {
         url={`https://chocoelite.lovable.app/product/${product.id}`}
         type="product"
       />
-
+      <Navbar />
       <div className="min-h-screen pt-24 pb-20">
         <div className="container mx-auto px-4">
           {/* Breadcrumb */}
@@ -236,6 +242,7 @@ const ProductDetail = () => {
           )}
         </div>
       </div>
+      <Footer />
     </>
   );
 };

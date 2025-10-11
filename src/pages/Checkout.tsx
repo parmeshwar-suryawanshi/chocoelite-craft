@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SEO from '@/components/SEO';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -55,7 +57,7 @@ const Checkout = () => {
   return (
     <>
       <SEO title="Checkout | ChocoElite" />
-
+      <Navbar />
       <div className="min-h-screen pt-24 pb-20 bg-luxury-cream">
         <div className="container mx-auto px-4">
           <h1 className="text-4xl md:text-5xl font-display font-bold mb-8 text-gradient-luxury">
@@ -238,6 +240,7 @@ const Checkout = () => {
           </form>
         </div>
       </div>
+      <Footer />
     </>
   );
 };

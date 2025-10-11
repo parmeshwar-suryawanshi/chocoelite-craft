@@ -66,6 +66,58 @@ const Hero = () => {
         <div className="absolute top-1/3 right-1/3 w-12 h-12 border-2 border-white/60 rotate-12 animate-float-slow" style={{ animationDelay: "1.5s" }} />
       </div>
 
+      {/* Floating Chocolate Images */}
+      <div className="absolute inset-0 opacity-30 pointer-events-none overflow-hidden">
+        {/* Top Left Chocolate */}
+        <img 
+          src="https://images.unsplash.com/photo-1511381939415-e44015466834?w=200&h=200&fit=crop" 
+          alt="" 
+          className="absolute top-20 left-[5%] w-24 h-24 md:w-32 md:h-32 rounded-full object-cover animate-float-slow blur-[1px] shadow-2xl"
+        />
+        {/* Top Right Chocolate Bar */}
+        <img 
+          src="https://images.unsplash.com/photo-1606312619070-d48b4772d8f0?w=300&h=200&fit=crop" 
+          alt="" 
+          className="absolute top-32 right-[8%] w-32 h-20 md:w-40 md:h-24 rounded-lg object-cover animate-float-slow blur-[1px] shadow-2xl" 
+          style={{ animationDelay: "1s" }}
+        />
+        {/* Middle Left Truffle */}
+        <img 
+          src="https://images.unsplash.com/photo-1548907040-4baa42d10919?w=200&h=200&fit=crop" 
+          alt="" 
+          className="absolute top-1/2 left-[10%] w-20 h-20 md:w-28 md:h-28 rounded-full object-cover animate-float-slow blur-[1px] shadow-2xl" 
+          style={{ animationDelay: "2s" }}
+        />
+        {/* Bottom Right Chocolate Pieces */}
+        <img 
+          src="https://images.unsplash.com/photo-1575550959106-5a7defe28b56?w=250&h=250&fit=crop" 
+          alt="" 
+          className="absolute bottom-32 right-[5%] w-28 h-28 md:w-36 md:h-36 rounded-lg object-cover animate-float-slow blur-[1px] shadow-2xl" 
+          style={{ animationDelay: "0.5s" }}
+        />
+        {/* Middle Right Chocolate Bar Stack */}
+        <img 
+          src="https://images.unsplash.com/photo-1590080876351-cd3f9c4f5e74?w=200&h=300&fit=crop" 
+          alt="" 
+          className="absolute top-1/3 right-[15%] w-24 h-32 md:w-28 md:h-40 rounded-lg object-cover animate-float-slow blur-[1px] shadow-2xl" 
+          style={{ animationDelay: "1.5s" }}
+        />
+        {/* Bottom Left Cacao Pod */}
+        <img 
+          src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=200&h=200&fit=crop" 
+          alt="" 
+          className="absolute bottom-20 left-[12%] w-20 h-20 md:w-24 md:h-24 rounded-full object-cover animate-float-slow blur-[1px] shadow-2xl" 
+          style={{ animationDelay: "2.5s" }}
+        />
+        {/* Top Center Chocolate Splash */}
+        <img 
+          src="https://images.unsplash.com/photo-1549007994-cb92caebd54b?w=300&h=200&fit=crop" 
+          alt="" 
+          className="absolute top-10 left-1/2 -translate-x-1/2 w-32 h-20 md:w-40 md:h-24 rounded-lg object-cover animate-float-slow blur-[1px] shadow-2xl opacity-50" 
+          style={{ animationDelay: "0.8s" }}
+        />
+      </div>
+
       <div className="container mx-auto px-4 py-32 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
           {/* Badge with sparkle animation */}

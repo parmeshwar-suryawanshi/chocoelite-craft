@@ -1,7 +1,21 @@
 import { Button } from "@/components/ui/button";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Sparkles } from "lucide-react";
+import { useEffect, useState } from "react";
 
 const Hero = () => {
+  const [particles, setParticles] = useState<Array<{ id: number; x: number; y: number; delay: number }>>([]);
+
+  useEffect(() => {
+    // Generate random particles
+    const newParticles = Array.from({ length: 20 }, (_, i) => ({
+      id: i,
+      x: Math.random() * 100,
+      y: Math.random() * 100,
+      delay: Math.random() * 5,
+    }));
+    setParticles(newParticles);
+  }, []);
+
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
@@ -12,102 +26,143 @@ const Hero = () => {
   return (
     <section
       id="hero"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-[#6B2D8F] via-[#5B2B7E] to-[#4B1F6E]"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden gradient-purple-pink"
     >
-      {/* Illustrated Pattern Background - Similar to Cadbury */}
-      <div className="absolute inset-0 opacity-[0.08]">
-        <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <pattern id="chocolate-pattern" x="0" y="0" width="200" height="200" patternUnits="userSpaceOnUse">
-              {/* Chocolate Bar */}
-              <rect x="10" y="20" width="60" height="80" fill="none" stroke="currentColor" strokeWidth="2" rx="4"/>
-              <line x1="10" y1="40" x2="70" y2="40" stroke="currentColor" strokeWidth="2"/>
-              <line x1="10" y1="60" x2="70" y2="60" stroke="currentColor" strokeWidth="2"/>
-              <line x1="10" y1="80" x2="70" y2="80" stroke="currentColor" strokeWidth="2"/>
-              <line x1="30" y1="20" x2="30" y2="100" stroke="currentColor" strokeWidth="2"/>
-              <line x1="50" y1="20" x2="50" y2="100" stroke="currentColor" strokeWidth="2"/>
-              
-              {/* Milk Bottle */}
-              <ellipse cx="145" cy="35" rx="15" ry="8" fill="none" stroke="currentColor" strokeWidth="2"/>
-              <rect x="130" y="35" width="30" height="50" fill="none" stroke="currentColor" strokeWidth="2" rx="2"/>
-              <rect x="140" y="25" width="10" height="12" fill="none" stroke="currentColor" strokeWidth="2"/>
-              
-              {/* Cacao Pod */}
-              <ellipse cx="45" cy="150" rx="20" ry="30" fill="none" stroke="currentColor" strokeWidth="2"/>
-              <path d="M 45 120 Q 50 135 45 150" stroke="currentColor" strokeWidth="2" fill="none"/>
-              <path d="M 45 120 Q 40 135 45 150" stroke="currentColor" strokeWidth="2" fill="none"/>
-              
-              {/* Chocolate Chunk */}
-              <path d="M 120 140 L 150 145 L 155 170 L 130 175 Z" fill="none" stroke="currentColor" strokeWidth="2"/>
-              <circle cx="135" cy="155" r="3" fill="currentColor"/>
-              <circle cx="145" cy="160" r="3" fill="currentColor"/>
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#chocolate-pattern)" className="text-white"/>
-        </svg>
+      {/* Animated Grid Background */}
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
+          backgroundSize: '50px 50px',
+          animation: 'grid-move 20s linear infinite'
+        }} />
       </div>
 
-      {/* Floating Chocolate Product Images */}
+      {/* Particle Effects */}
       <div className="absolute inset-0 pointer-events-none">
-        {/* Left chocolate bar */}
+        {particles.map((particle) => (
+          <div
+            key={particle.id}
+            className="absolute w-1 h-1 bg-white rounded-full animate-particle"
+            style={{
+              left: `${particle.x}%`,
+              top: `${particle.y}%`,
+              animationDelay: `${particle.delay}s`,
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Glowing Orbs */}
+      <div className="absolute inset-0 opacity-30">
+        <div className="absolute top-20 left-10 w-64 h-64 rounded-full bg-gradient-to-r from-white/40 to-transparent blur-3xl animate-pulse-slow" />
+        <div className="absolute bottom-20 right-10 w-80 h-80 rounded-full bg-gradient-to-l from-white/30 to-transparent blur-3xl animate-pulse-slow" style={{ animationDelay: "1s" }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-white/20 blur-3xl animate-pulse-slow" style={{ animationDelay: "2s" }} />
+      </div>
+
+      {/* Floating Geometric Shapes */}
+      <div className="absolute inset-0 opacity-20 pointer-events-none">
+        <div className="absolute top-1/4 left-1/4 w-16 h-16 border-2 border-white/50 rotate-45 animate-float-slow" />
+        <div className="absolute bottom-1/4 right-1/4 w-20 h-20 border-2 border-white/40 animate-spin-slow" />
+        <div className="absolute top-1/3 right-1/3 w-12 h-12 border-2 border-white/60 rotate-12 animate-float-slow" style={{ animationDelay: "1.5s" }} />
+      </div>
+
+      {/* Floating Chocolate Images */}
+      <div className="absolute inset-0 opacity-30 pointer-events-none overflow-hidden">
+        {/* Top Left Chocolate */}
         <img 
-          src="https://images.unsplash.com/photo-1606312619070-d48b4772d8f0?w=250&h=400&fit=crop&q=80"
-          alt=""
-          className="absolute left-[5%] top-[20%] w-32 md:w-48 opacity-80 animate-float-slow"
-          style={{ filter: 'drop-shadow(0 20px 40px rgba(0,0,0,0.3))' }}
+          src="https://images.unsplash.com/photo-1511381939415-e44015466834?w=200&h=200&fit=crop" 
+          alt="" 
+          className="absolute top-20 left-[5%] w-24 h-24 md:w-32 md:h-32 rounded-full object-cover animate-float-slow blur-[1px] shadow-2xl"
         />
-        
-        {/* Right chocolate pieces */}
+        {/* Top Right Chocolate Bar */}
         <img 
-          src="https://images.unsplash.com/photo-1511381939415-e44015466834?w=300&h=300&fit=crop&q=80"
-          alt=""
-          className="absolute right-[8%] top-[25%] w-40 md:w-56 opacity-80 animate-float-slow"
-          style={{ animationDelay: '1s', filter: 'drop-shadow(0 20px 40px rgba(0,0,0,0.3))' }}
+          src="https://images.unsplash.com/photo-1606312619070-d48b4772d8f0?w=300&h=200&fit=crop" 
+          alt="" 
+          className="absolute top-32 right-[8%] w-32 h-20 md:w-40 md:h-24 rounded-lg object-cover animate-float-slow blur-[1px] shadow-2xl" 
+          style={{ animationDelay: "1s" }}
         />
-        
-        {/* Bottom right chocolate bar */}
+        {/* Middle Left Truffle */}
         <img 
-          src="https://images.unsplash.com/photo-1599599810769-bcde5a160d32?w=250&h=350&fit=crop&q=80"
-          alt=""
-          className="absolute right-[5%] bottom-[15%] w-28 md:w-40 opacity-70 animate-float-slow"
-          style={{ animationDelay: '2s', filter: 'drop-shadow(0 20px 40px rgba(0,0,0,0.3))' }}
+          src="https://images.unsplash.com/photo-1548907040-4baa42d10919?w=200&h=200&fit=crop" 
+          alt="" 
+          className="absolute top-1/2 left-[10%] w-20 h-20 md:w-28 md:h-28 rounded-full object-cover animate-float-slow blur-[1px] shadow-2xl" 
+          style={{ animationDelay: "2s" }}
+        />
+        {/* Bottom Right Chocolate Pieces */}
+        <img 
+          src="https://images.unsplash.com/photo-1575550959106-5a7defe28b56?w=250&h=250&fit=crop" 
+          alt="" 
+          className="absolute bottom-32 right-[5%] w-28 h-28 md:w-36 md:h-36 rounded-lg object-cover animate-float-slow blur-[1px] shadow-2xl" 
+          style={{ animationDelay: "0.5s" }}
+        />
+        {/* Middle Right Chocolate Bar Stack */}
+        <img 
+          src="https://images.unsplash.com/photo-1590080876351-cd3f9c4f5e74?w=200&h=300&fit=crop" 
+          alt="" 
+          className="absolute top-1/3 right-[15%] w-24 h-32 md:w-28 md:h-40 rounded-lg object-cover animate-float-slow blur-[1px] shadow-2xl" 
+          style={{ animationDelay: "1.5s" }}
+        />
+        {/* Bottom Left Cacao Pod */}
+        <img 
+          src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=200&h=200&fit=crop" 
+          alt="" 
+          className="absolute bottom-20 left-[12%] w-20 h-20 md:w-24 md:h-24 rounded-full object-cover animate-float-slow blur-[1px] shadow-2xl" 
+          style={{ animationDelay: "2.5s" }}
+        />
+        {/* Top Center Chocolate Splash */}
+        <img 
+          src="https://images.unsplash.com/photo-1549007994-cb92caebd54b?w=300&h=200&fit=crop" 
+          alt="" 
+          className="absolute top-10 left-1/2 -translate-x-1/2 w-32 h-20 md:w-40 md:h-24 rounded-lg object-cover animate-float-slow blur-[1px] shadow-2xl opacity-50" 
+          style={{ animationDelay: "0.8s" }}
         />
       </div>
 
-      {/* Glowing accent effects */}
-      <div className="absolute inset-0 opacity-20">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-purple-400 blur-[120px] animate-pulse-slow" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-pink-400 blur-[120px] animate-pulse-slow" style={{ animationDelay: "1.5s" }} />
-      </div>
-
-      <div className="container mx-auto px-4 py-20 md:py-32 relative z-10">
-        <div className="max-w-5xl mx-auto text-center">
-          {/* Brand Name in Gold/Yellow */}
-          <div className="mb-8 animate-fade-in-up">
-            <h1 className="text-6xl md:text-8xl lg:text-9xl font-display font-black mb-6 leading-none">
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-yellow-400 to-yellow-500 drop-shadow-[0_2px_10px_rgba(255,215,0,0.5)]">
-                ChocoElite
-              </span>
-            </h1>
-            <div className="text-4xl md:text-6xl lg:text-7xl font-display font-black text-white mb-4 leading-tight drop-shadow-[0_2px_20px_rgba(0,0,0,0.3)]">
-              FRUIT CHOCOLATE
-            </div>
+      <div className="container mx-auto px-4 py-32 relative z-10">
+        <div className="max-w-4xl mx-auto text-center">
+          {/* Badge with sparkle animation */}
+          <div className="inline-flex items-center gap-2 mb-6 px-6 py-3 rounded-full bg-white/20 backdrop-blur-md border border-white/40 shadow-2xl animate-fade-in-up">
+            <Sparkles className="h-4 w-4 text-white animate-pulse" />
+            <p className="text-white text-sm font-semibold tracking-wide">Fruit at Every Bite</p>
+            <Sparkles className="h-4 w-4 text-white animate-pulse" style={{ animationDelay: "0.5s" }} />
           </div>
+          
+          {/* Main Heading with stagger animation */}
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-display font-bold text-white mb-8 leading-tight">
+            <span className="inline-block animate-slide-in-left">ChocoElite</span>
+            <br />
+            <span className="inline-block text-white/95 animate-slide-in-right" style={{ animationDelay: "0.2s" }}>
+              Guilt-Free Indulgence,
+            </span>
+            <br />
+            <span className="inline-block bg-gradient-to-r from-white via-white/90 to-white/80 bg-clip-text text-transparent animate-slide-in-left" style={{ animationDelay: "0.4s" }}>
+              Pure Fruit Pleasure!
+            </span>
+          </h1>
 
-          {/* Tagline */}
-          <p className="text-xl md:text-2xl text-white/95 mb-12 max-w-3xl mx-auto font-medium leading-relaxed animate-fade-in-up drop-shadow-lg" style={{ animationDelay: "0.2s" }}>
-            Made with real fruits and premium cocoa... It's the guilt-free indulgence that's unmistakably ChocoElite.
+          {/* Description */}
+          <p className="text-lg md:text-xl text-white/90 mb-10 max-w-2xl mx-auto leading-relaxed animate-fade-in-up" style={{ animationDelay: "0.6s" }}>
+            Experience chocolate reimagined with real fruits—a luxurious fusion of cocoa
+            and nature that delights your senses and nourishes your body.
           </p>
 
-          {/* CTA Button - Yellow like Cadbury */}
-          <div className="animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
+          {/* CTA Buttons with hover glow */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-fade-in-up" style={{ animationDelay: "0.8s" }}>
             <Button
               onClick={() => scrollToSection("products")}
               size="lg"
-              className="group relative bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-gray-900 font-bold px-12 py-8 text-xl rounded-full shadow-2xl hover:shadow-yellow-500/50 transition-all duration-300 hover:scale-105 border-none"
+              className="group relative bg-white text-secondary hover:bg-white/90 font-semibold px-10 py-7 text-lg shadow-2xl hover:shadow-white/30 transition-all duration-300 hover:scale-105"
             >
-              <span className="relative z-10">SHOP NOW</span>
-              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-yellow-300 to-yellow-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-xl" />
+              <span className="relative z-10">Explore Products</span>
+              <div className="absolute inset-0 rounded-md bg-gradient-to-r from-white/0 via-white/50 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-xl" />
+            </Button>
+            <Button
+              onClick={() => scrollToSection("contact")}
+              size="lg"
+              variant="outline"
+              className="group relative border-2 border-white/60 text-white hover:bg-white hover:text-secondary font-semibold px-10 py-7 text-lg backdrop-blur-md bg-white/10 shadow-xl hover:shadow-white/20 transition-all duration-300 hover:scale-105"
+            >
+              <span className="relative z-10">Get in Touch</span>
             </Button>
           </div>
         </div>
@@ -116,12 +171,12 @@ const Hero = () => {
       {/* Animated Scroll Indicator */}
       <button
         onClick={() => scrollToSection("about")}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/80 animate-bounce-slow cursor-pointer group"
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white animate-bounce-slow cursor-pointer group"
         aria-label="Scroll to content"
       >
         <div className="relative">
-          <ChevronDown className="h-10 w-10 group-hover:scale-110 transition-transform duration-300 drop-shadow-lg" />
-          <div className="absolute inset-0 h-10 w-10 bg-white/20 rounded-full blur-md animate-pulse" />
+          <ChevronDown className="h-8 w-8 group-hover:scale-110 transition-transform duration-300" />
+          <div className="absolute inset-0 h-8 w-8 bg-white/20 rounded-full blur-md animate-pulse" />
         </div>
       </button>
     </section>

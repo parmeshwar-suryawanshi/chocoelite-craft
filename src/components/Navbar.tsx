@@ -1,15 +1,17 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Menu, X, ShoppingCart } from "lucide-react";
+import { Menu, X, ShoppingCart, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useCart } from "@/contexts/CartContext";
+import { useAuth } from "@/contexts/AuthContext";
 import monogramLogo from "@/assets/monogram-logo.jpg";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { totalItems } = useCart();
+  const { user, signOut } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -107,6 +109,41 @@ const Navbar = () => {
                 <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 bg-gradient-to-r from-purple-500 to-pink-500 text-white border-2 border-white shadow-lg animate-pulse">{totalItems}</Badge>
               )}
             </Button>
+            {user ? (
+              <>
+                <Button 
+                  onClick={() => navigate("/profile")} 
+                  variant="ghost" 
+                  size="sm" 
+                  className={`backdrop-blur-sm transition-all duration-300 hover:scale-105 shadow-lg ${
+                    isScrolled 
+                      ? "bg-foreground/10 hover:bg-foreground/20 text-foreground border border-foreground/20"
+                      : "bg-white/10 hover:bg-white/20 text-white border border-white/20"
+                  }`}
+                >
+                  <User className="h-5 w-5" />
+                </Button>
+                <Button 
+                  onClick={signOut} 
+                  variant="ghost" 
+                  size="sm" 
+                  className={`backdrop-blur-sm transition-all duration-300 hover:scale-105 shadow-lg ${
+                    isScrolled 
+                      ? "bg-foreground/10 hover:bg-foreground/20 text-foreground border border-foreground/20"
+                      : "bg-white/10 hover:bg-white/20 text-white border border-white/20"
+                  }`}
+                >
+                  <LogOut className="h-5 w-5" />
+                </Button>
+              </>
+            ) : (
+              <Button 
+                onClick={() => navigate("/auth")} 
+                className="bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600"
+              >
+                Sign In
+              </Button>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -187,6 +224,42 @@ const Navbar = () => {
             >
               View Cart ({totalItems})
             </Button>
+            {user ? (
+              <>
+                <Button
+                  onClick={() => {
+                    navigate("/profile");
+                    setIsMobileMenuOpen(false);
+                  }}
+                  variant="outline"
+                  className="w-full"
+                >
+                  <User className="mr-2 h-4 w-4" />
+                  My Account
+                </Button>
+                <Button
+                  onClick={() => {
+                    signOut();
+                    setIsMobileMenuOpen(false);
+                  }}
+                  variant="outline"
+                  className="w-full"
+                >
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Sign Out
+                </Button>
+              </>
+            ) : (
+              <Button
+                onClick={() => {
+                  navigate("/auth");
+                  setIsMobileMenuOpen(false);
+                }}
+                className="w-full bg-gradient-to-r from-purple-500 to-pink-500"
+              >
+                Sign In
+              </Button>
+            )}
           </div>
         )}
       </div>

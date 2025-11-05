@@ -2,9 +2,10 @@ import { Link } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { ShoppingCart, Star } from 'lucide-react';
+import { ShoppingCart, Star, Heart } from 'lucide-react';
 import { Product } from '@/data/products';
 import { useCart } from '@/contexts/CartContext';
+import { useWishlist } from '@/hooks/useWishlist';
 
 interface ProductCardProps {
   product: Product;
@@ -13,6 +14,7 @@ interface ProductCardProps {
 
 const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
   const { addToCart } = useCart();
+  const { toggleWishlist, isInWishlist } = useWishlist();
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -23,6 +25,11 @@ const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
       image: product.image,
       category: product.category,
     });
+  };
+
+  const handleWishlist = (e: React.MouseEvent) => {
+    e.preventDefault();
+    toggleWishlist(product.id);
   };
 
   return (
@@ -38,6 +45,16 @@ const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
             loading="lazy"
           />
+          <Button
+            onClick={handleWishlist}
+            size="icon"
+            variant="ghost"
+            className="absolute top-4 left-4 bg-white/80 backdrop-blur-sm hover:bg-white"
+          >
+            <Heart
+              className={`h-5 w-5 ${isInWishlist(product.id) ? 'fill-red-500 text-red-500' : ''}`}
+            />
+          </Button>
           <div className="absolute top-4 right-4 flex flex-col gap-2">
             <Badge className="gradient-luxury text-white border-none shadow-lg">
               {product.category}

@@ -10,8 +10,10 @@ import { Separator } from '@/components/ui/separator';
 import { ShoppingCart, Star, Heart, Share2, Truck, Shield, Award } from 'lucide-react';
 import { products } from '@/data/products';
 import { useCart } from '@/contexts/CartContext';
+import { useWishlist } from '@/hooks/useWishlist';
 import { toast } from '@/hooks/use-toast';
 import ProductCard from '@/components/ProductCard';
+import ReviewSection from '@/components/ReviewSection';
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -19,6 +21,7 @@ const ProductDetail = () => {
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const { addToCart } = useCart();
+  const { toggleWishlist, isInWishlist } = useWishlist();
 
   if (!product) {
     return (
@@ -225,6 +228,11 @@ const ProductDetail = () => {
                 </div>
               </div>
             </div>
+          </div>
+
+          {/* Reviews Section */}
+          <div className="mb-20">
+            <ReviewSection productId={product.id} />
           </div>
 
           {/* Related Products */}

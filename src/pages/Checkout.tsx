@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SEO from '@/components/SEO';
 import Navbar from '@/components/Navbar';
@@ -9,10 +9,13 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { useCart } from '@/contexts/CartContext';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 
 const Checkout = () => {
   const { items, totalPrice, clearCart } = useCart();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -26,23 +29,80 @@ const Checkout = () => {
     pincode: '',
   });
 
+  useEffect(() => {
+    if (!user) {
+      toast({ title: 'Please sign in', description: 'You need to be signed in to checkout' });
+      navigate('/auth');
+    }
+  }, [user, navigate]);
+
   const shipping = totalPrice > 999 ? 0 : 50;
   const finalTotal = totalPrice + shipping;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!user) return;
+    
     setLoading(true);
 
-    // Simulate order processing
-    setTimeout(() => {
-      clearCart();
+    try {
+      const shippingAddress = {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        phone: formData.phone,
+        address: formData.address,
+        city: formData.city,
+        state: formData.state,
+        pincode: formData.pincode,
+      };
+
+      const { data: order, error: orderError } = await supabase
+        .from('orders')
+        .insert({
+          user_id: user.id,
+          total_amount: finalTotal,
+          shipping_address: shippingAddress,
+          payment_method: 'card',
+          status: 'pending'
+        })
+        .select()
+        .single();
+
+      if (orderError) throw orderError;
+
+      const orderItems = items.map(item => ({
+        order_id: order.id,
+        product_id: item.id,
+        product_name: item.name,
+        product_image: item.image,
+        quantity: item.quantity,
+        price: item.price
+      }));
+
+      const { error: itemsError } = await supabase
+        .from('order_items')
+        .insert(orderItems);
+
+      if (itemsError) throw itemsError;
+
+      await clearCart();
+      
       toast({
         title: 'Order Placed Successfully! 🎉',
-        description: 'Thank you for your order. Check your email for confirmation.',
+        description: 'Thank you for your order. Check your profile for order details.',
       });
-      navigate('/');
+      
+      navigate('/profile');
+    } catch (error: any) {
+      toast({
+        title: 'Order Failed',
+        description: error.message,
+        variant: 'destructive'
+      });
+    } finally {
       setLoading(false);
-    }, 2000);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -20,6 +20,7 @@ const ProductDetail = () => {
   const product = products.find(p => p.id === id);
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
+  const [selectedSize, setSelectedSize] = useState(0);
   const { addToCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
 
@@ -45,11 +46,15 @@ const ProductDetail = () => {
     .slice(0, 4);
 
   const handleAddToCart = () => {
+    const selectedSizeData = product.sizes?.[selectedSize];
+    const price = selectedSizeData?.price || product.price;
+    const sizeName = selectedSizeData?.weight || '';
+    
     for (let i = 0; i < quantity; i++) {
       addToCart({
-        id: product.id,
-        name: product.name,
-        price: product.price,
+        id: `${product.id}-${sizeName}`,
+        name: `${product.name} ${sizeName ? `(${sizeName})` : ''}`,
+        price: price,
         image: product.image,
         category: product.category,
       });
@@ -146,11 +151,38 @@ const ProductDetail = () => {
                 <span className="text-muted-foreground">({product.reviews} reviews)</span>
               </div>
 
-              <p className="text-4xl font-bold text-luxury-brown mb-6">₹{product.price}</p>
+              <p className="text-4xl font-bold text-luxury-brown mb-6">
+                ₹{product.sizes?.[selectedSize]?.price || product.price}
+              </p>
 
               <p className="text-lg text-muted-foreground mb-6 leading-relaxed">
                 {product.longDescription}
               </p>
+
+              <Separator className="my-6" />
+
+              {/* Size Selector */}
+              {product.sizes && product.sizes.length > 0 && (
+                <div className="mb-6">
+                  <p className="font-semibold mb-3">Select Size:</p>
+                  <div className="flex gap-3">
+                    {product.sizes.map((size, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => setSelectedSize(idx)}
+                        className={`flex-1 p-4 rounded-lg border-2 transition-all ${
+                          selectedSize === idx
+                            ? 'border-secondary bg-secondary/10'
+                            : 'border-border hover:border-secondary/50'
+                        }`}
+                      >
+                        <p className="font-semibold text-lg">{size.weight}</p>
+                        <p className="text-sm text-muted-foreground">₹{size.price}</p>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               <Separator className="my-6" />
 

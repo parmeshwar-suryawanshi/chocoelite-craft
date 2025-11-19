@@ -12,6 +12,8 @@ import LoyaltySection from "@/components/LoyaltySection";
 import GiftSection from "@/components/GiftSection";
 import LimitedEdition from "@/components/LimitedEdition";
 import CraftVideo from "@/components/CraftVideo";
+import SpecialOffers from "@/components/SpecialOffers";
+import WhatsAppBot from "@/components/WhatsAppBot";
 
 const Index = () => {
   return (
@@ -21,10 +23,11 @@ const Index = () => {
         <Navbar />
         <main>
           <Hero />
-          <About />
+          <SpecialOffers />
           <Products />
           <LimitedEdition />
           <CraftVideo />
+          <About />
           <GiftSection />
           <Gallery />
           <Testimonials />
@@ -33,6 +36,7 @@ const Index = () => {
           <Contact />
         </main>
         <Footer />
+        <WhatsAppBot />
       </div>
     </>
   );

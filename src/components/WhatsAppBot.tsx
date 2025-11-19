@@ -24,7 +24,7 @@ const WhatsAppBot = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   // WhatsApp direct link
-  const whatsappNumber = '1234567890'; // Replace with your actual WhatsApp business number
+  const whatsappNumber = '918042781962'; // Your WhatsApp business number
   const whatsappLink = `https://wa.me/${whatsappNumber}?text=Hi! I'd like to know more about your chocolates.`;
 
   const handleSendMessage = async () => {

@@ -65,6 +65,12 @@ const Footer = () => {
               >
                 → Contact
               </a>
+              <a
+                href="/track-order"
+                className="block text-white/80 hover:text-white transition-all duration-300 hover:translate-x-2 font-medium"
+              >
+                → Track Order
+              </a>
             </nav>
           </div>
 

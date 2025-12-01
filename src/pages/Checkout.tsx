@@ -36,12 +36,23 @@ const Checkout = () => {
     }
   }, [user, navigate]);
 
-  const shipping = totalPrice > 999 ? 0 : 50;
+  const shipping = totalPrice >= 1000 ? 0 : 50;
   const finalTotal = totalPrice + shipping;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
+
+    // Validate city is Mumbai or Pune
+    const allowedCities = ['mumbai', 'pune'];
+    if (!allowedCities.includes(formData.city.toLowerCase().trim())) {
+      toast({
+        title: 'Delivery Not Available',
+        description: 'We currently deliver only in Mumbai and Pune.',
+        variant: 'destructive'
+      });
+      return;
+    }
     
     setLoading(true);
 
@@ -193,16 +204,17 @@ const Checkout = () => {
                         />
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div>
-                          <Label htmlFor="city">City *</Label>
-                          <Input
-                            id="city"
-                            name="city"
-                            required
-                            value={formData.city}
-                            onChange={handleChange}
-                          />
-                        </div>
+                      <div>
+                        <Label htmlFor="city">City * (Mumbai or Pune only)</Label>
+                        <Input
+                          id="city"
+                          name="city"
+                          required
+                          placeholder="Mumbai or Pune"
+                          value={formData.city}
+                          onChange={handleChange}
+                        />
+                      </div>
                         <div>
                           <Label htmlFor="state">State *</Label>
                           <Input

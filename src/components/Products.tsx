@@ -52,18 +52,18 @@ const Products = () => {
                 </p>
                 <div className="flex items-center justify-between">
                   <div>
-                    {product.sizes && product.sizes.length > 0 ? (
+                    {product.bulkPacks && product.bulkPacks.length > 0 ? (
                       <>
                         <p className="text-xs text-muted-foreground mb-1">Starting from</p>
-                        <p className="text-2xl font-bold text-luxury-brown">₹{product.sizes[0].price}</p>
+                        <p className="text-2xl font-bold text-luxury-brown">₹{product.bulkPacks[0].price}</p>
                       </>
                     ) : (
                       <p className="text-2xl font-bold text-luxury-brown">₹{product.price}</p>
                     )}
                   </div>
-                  {product.sizes && product.sizes.length > 0 && (
+                  {product.bulkPacks && product.bulkPacks.length > 0 && (
                     <Badge variant="outline" className="text-xs">
-                      3 sizes
+                      3 pack sizes
                     </Badge>
                   )}
                 </div>

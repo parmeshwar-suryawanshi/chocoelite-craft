@@ -4,8 +4,8 @@ export interface Product {
   description: string;
   longDescription: string;
   price: number;
-  sizes?: {
-    weight: string;
+  bulkPacks?: {
+    quantity: string;
     price: number;
   }[];
   category: string;
@@ -34,11 +34,11 @@ export const products: Product[] = [
     name: 'Mango White Chocolate',
     description: 'Luxurious white chocolate infused with authentic Alphonso mango essence - a tropical delight.',
     longDescription: 'Our premium white chocolate combined with the rich, sweet flavor of Alphonso mangoes creates an extraordinary taste experience. Hand-crafted with real mango pulp from select Indian orchards, each piece offers a perfect balance of creamy sweetness and tropical fruit notes.',
-    price: 89,
-    sizes: [
-      { weight: '17gm', price: 89 },
-      { weight: '35gm', price: 169 },
-      { weight: '75gm', price: 329 }
+    price: 549,
+    bulkPacks: [
+      { quantity: 'Pack of 6', price: 549 },
+      { quantity: 'Pack of 12', price: 999 },
+      { quantity: 'Pack of 24', price: 1799 }
     ],
     category: 'Fruit Chocolate',
     type: 'white',
@@ -66,11 +66,11 @@ export const products: Product[] = [
     name: 'Mango Milk Chocolate',
     description: 'Smooth milk chocolate meets the king of fruits - a perfect harmony of flavors.',
     longDescription: 'Our signature milk chocolate blended with sun-ripened Alphonso mango creates an irresistible combination. The creamy milk chocolate base perfectly complements the tropical sweetness of mango, making this a favorite among chocolate lovers of all ages.',
-    price: 79,
-    sizes: [
-      { weight: '17gm', price: 79 },
-      { weight: '35gm', price: 149 },
-      { weight: '75gm', price: 299 }
+    price: 499,
+    bulkPacks: [
+      { quantity: 'Pack of 6', price: 499 },
+      { quantity: 'Pack of 12', price: 899 },
+      { quantity: 'Pack of 24', price: 1649 }
     ],
     category: 'Fruit Chocolate',
     type: 'milk',
@@ -98,11 +98,11 @@ export const products: Product[] = [
     name: 'Strawberry White Chocolate',
     description: 'Delicate white chocolate enhanced with sweet, tangy strawberry goodness.',
     longDescription: 'Experience the romance of fresh strawberries combined with premium white chocolate. Made with real strawberry pieces and natural extracts, each bite delivers a burst of fruity freshness enveloped in smooth, creamy white chocolate.',
-    price: 85,
-    sizes: [
-      { weight: '17gm', price: 85 },
-      { weight: '35gm', price: 159 },
-      { weight: '75gm', price: 319 }
+    price: 529,
+    bulkPacks: [
+      { quantity: 'Pack of 6', price: 529 },
+      { quantity: 'Pack of 12', price: 969 },
+      { quantity: 'Pack of 24', price: 1749 }
     ],
     category: 'Fruit Chocolate',
     type: 'white',
@@ -129,11 +129,11 @@ export const products: Product[] = [
     name: 'Strawberry Milk Chocolate',
     description: 'Classic milk chocolate paired with fresh strawberry for a timeless favorite.',
     longDescription: 'A beloved classic reimagined with premium ingredients. Our rich milk chocolate combined with real strawberry creates a nostalgic yet sophisticated treat that appeals to both children and adults. Perfect balance of creamy and fruity notes.',
-    price: 75,
-    sizes: [
-      { weight: '17gm', price: 75 },
-      { weight: '35gm', price: 145 },
-      { weight: '75gm', price: 289 }
+    price: 479,
+    bulkPacks: [
+      { quantity: 'Pack of 6', price: 479 },
+      { quantity: 'Pack of 12', price: 869 },
+      { quantity: 'Pack of 24', price: 1599 }
     ],
     category: 'Fruit Chocolate',
     type: 'milk',
@@ -160,11 +160,11 @@ export const products: Product[] = [
     name: 'Custard Apple White Chocolate',
     description: 'Exotic custard apple meets creamy white chocolate - an innovative fusion.',
     longDescription: 'Discover the unique taste of custard apple (sitaphal) blended into premium white chocolate. This exotic combination offers a distinctive flavor profile with the natural sweetness and creamy texture of custard apple perfectly complementing our smooth white chocolate.',
-    price: 95,
-    sizes: [
-      { weight: '17gm', price: 95 },
-      { weight: '35gm', price: 179 },
-      { weight: '75gm', price: 349 }
+    price: 599,
+    bulkPacks: [
+      { quantity: 'Pack of 6', price: 599 },
+      { quantity: 'Pack of 12', price: 1099 },
+      { quantity: 'Pack of 24', price: 1999 }
     ],
     category: 'Fruit Chocolate',
     type: 'white',
@@ -193,11 +193,11 @@ export const products: Product[] = [
     name: 'Custard Apple Milk Chocolate',
     description: 'Rich milk chocolate infused with the rare and delicious custard apple flavor.',
     longDescription: 'A rare treat for adventurous chocolate lovers. Our premium milk chocolate enhanced with authentic custard apple creates a one-of-a-kind indulgence. The natural sweetness and unique texture of custard apple adds an exotic dimension to classic milk chocolate.',
-    price: 89,
-    sizes: [
-      { weight: '17gm', price: 89 },
-      { weight: '35gm', price: 169 },
-      { weight: '75gm', price: 329 }
+    price: 569,
+    bulkPacks: [
+      { quantity: 'Pack of 6', price: 569 },
+      { quantity: 'Pack of 12', price: 1049 },
+      { quantity: 'Pack of 24', price: 1899 }
     ],
     category: 'Fruit Chocolate',
     type: 'milk',

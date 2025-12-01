@@ -93,16 +93,16 @@ const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
             {product.description}
           </p>
           <div className="flex items-center justify-between">
-            <div>
-              {product.sizes && product.sizes.length > 0 ? (
-                <>
-                  <p className="text-xs text-muted-foreground">Starting from</p>
-                  <p className="text-2xl font-bold text-luxury-brown">₹{product.sizes[0].price}</p>
-                </>
-              ) : (
-                <p className="text-2xl font-bold text-luxury-brown">₹{product.price}</p>
-              )}
-            </div>
+          <div>
+            {product.bulkPacks && product.bulkPacks.length > 0 ? (
+              <>
+                <p className="text-xs text-muted-foreground">Starting from</p>
+                <p className="text-2xl font-bold text-luxury-brown">₹{product.bulkPacks[0].price}</p>
+              </>
+            ) : (
+              <p className="text-2xl font-bold text-luxury-brown">₹{product.price}</p>
+            )}
+          </div>
             <Button
               onClick={handleAddToCart}
               disabled={!product.inStock}

@@ -74,10 +74,10 @@ const SpecialOffers = () => {
               </div>
               <h3 className="text-xl font-bold mb-2">Free Delivery</h3>
               <p className="text-muted-foreground mb-3">
-                On orders above ₹499
+                On orders above ₹1000
               </p>
               <Badge variant="secondary" className="bg-primary/10 text-primary">
-                All India
+                Mumbai & Pune
               </Badge>
             </CardContent>
           </Card>

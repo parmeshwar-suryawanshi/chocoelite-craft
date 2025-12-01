@@ -46,14 +46,14 @@ const ProductDetail = () => {
     .slice(0, 4);
 
   const handleAddToCart = () => {
-    const selectedSizeData = product.sizes?.[selectedSize];
-    const price = selectedSizeData?.price || product.price;
-    const sizeName = selectedSizeData?.weight || '';
+    const selectedPackData = product.bulkPacks?.[selectedSize];
+    const price = selectedPackData?.price || product.price;
+    const packName = selectedPackData?.quantity || '';
     
     for (let i = 0; i < quantity; i++) {
       addToCart({
-        id: `${product.id}-${sizeName}`,
-        name: `${product.name} ${sizeName ? `(${sizeName})` : ''}`,
+        id: `${product.id}-${packName}`,
+        name: `${product.name} ${packName ? `(${packName})` : ''}`,
         price: price,
         image: product.image,
         category: product.category,
@@ -152,7 +152,7 @@ const ProductDetail = () => {
               </div>
 
               <p className="text-4xl font-bold text-luxury-brown mb-6">
-                ₹{product.sizes?.[selectedSize]?.price || product.price}
+                ₹{product.bulkPacks?.[selectedSize]?.price || product.price}
               </p>
 
               <p className="text-lg text-muted-foreground mb-6 leading-relaxed">
@@ -161,12 +161,12 @@ const ProductDetail = () => {
 
               <Separator className="my-6" />
 
-              {/* Size Selector */}
-              {product.sizes && product.sizes.length > 0 && (
+              {/* Pack Size Selector */}
+              {product.bulkPacks && product.bulkPacks.length > 0 && (
                 <div className="mb-6">
-                  <p className="font-semibold mb-3">Select Size:</p>
+                  <p className="font-semibold mb-3">Select Pack Size:</p>
                   <div className="flex gap-3">
-                    {product.sizes.map((size, idx) => (
+                    {product.bulkPacks.map((pack, idx) => (
                       <button
                         key={idx}
                         onClick={() => setSelectedSize(idx)}
@@ -176,8 +176,8 @@ const ProductDetail = () => {
                             : 'border-border hover:border-secondary/50'
                         }`}
                       >
-                        <p className="font-semibold text-lg">{size.weight}</p>
-                        <p className="text-sm text-muted-foreground">₹{size.price}</p>
+                        <p className="font-semibold text-lg">{pack.quantity}</p>
+                        <p className="text-sm text-muted-foreground">₹{pack.price}</p>
                       </button>
                     ))}
                   </div>
@@ -232,7 +232,7 @@ const ProductDetail = () => {
                 <div className="text-center p-4 rounded-lg bg-muted">
                   <Truck className="h-6 w-6 mx-auto mb-2 text-luxury-brown" />
                   <p className="text-sm font-medium">Free Shipping</p>
-                  <p className="text-xs text-muted-foreground">On orders ₹999+</p>
+                  <p className="text-xs text-muted-foreground">On orders ₹1000+</p>
                 </div>
                 <div className="text-center p-4 rounded-lg bg-muted">
                   <Shield className="h-6 w-6 mx-auto mb-2 text-luxury-brown" />

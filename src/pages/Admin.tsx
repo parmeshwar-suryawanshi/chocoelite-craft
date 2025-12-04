@@ -19,10 +19,16 @@ import Footer from '@/components/Footer';
 interface Product {
   id: string;
   name: string;
+  description: string;
+  long_description?: string;
   price: number;
   in_stock: boolean;
   category: string;
   type: string;
+  image: string;
+  featured?: boolean;
+  bestseller?: boolean;
+  limited_edition?: boolean;
 }
 
 interface Offer {
@@ -33,6 +39,7 @@ interface Offer {
   discount_value: number;
   code: string;
   is_active: boolean;
+  min_order_amount?: number;
 }
 
 interface Order {
@@ -44,6 +51,31 @@ interface Order {
   user_id: string;
 }
 
+const initialProductForm = {
+  id: '',
+  name: '',
+  description: '',
+  long_description: '',
+  price: 0,
+  category: '',
+  type: 'milk',
+  image: '',
+  in_stock: true,
+  featured: false,
+  bestseller: false,
+  limited_edition: false,
+};
+
+const initialOfferForm = {
+  title: '',
+  description: '',
+  discount_type: 'percentage',
+  discount_value: 0,
+  code: '',
+  min_order_amount: 0,
+  is_active: true,
+};
+
 const Admin = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -52,6 +84,18 @@ const Admin = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [offers, setOffers] = useState<Offer[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
+  
+  // Product form state
+  const [productForm, setProductForm] = useState(initialProductForm);
+  const [isProductDialogOpen, setIsProductDialogOpen] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<string | null>(null);
+  const [productSaving, setProductSaving] = useState(false);
+  
+  // Offer form state
+  const [offerForm, setOfferForm] = useState(initialOfferForm);
+  const [isOfferDialogOpen, setIsOfferDialogOpen] = useState(false);
+  const [editingOffer, setEditingOffer] = useState<string | null>(null);
+  const [offerSaving, setOfferSaving] = useState(false);
 
   useEffect(() => {
     checkAdminAccess();
@@ -105,44 +149,106 @@ const Admin = () => {
     if (ordersRes.data) setOrders(ordersRes.data);
   };
 
-  const updateOrderStatus = async (orderId: string, status: string, deliveryStatus: string) => {
-    const { error } = await supabase
-      .from('orders')
-      .update({ status, delivery_status: deliveryStatus })
-      .eq('id', orderId);
-
-    if (error) {
+  // Product CRUD operations
+  const handleProductSubmit = async () => {
+    if (!productForm.id || !productForm.name || !productForm.description || !productForm.category || !productForm.image) {
       toast({
-        title: 'Error',
-        description: 'Failed to update order status',
+        title: 'Validation Error',
+        description: 'Please fill in all required fields',
         variant: 'destructive',
       });
-    } else {
-      toast({
-        title: 'Success',
-        description: 'Order status updated successfully',
-      });
+      return;
+    }
+
+    setProductSaving(true);
+    try {
+      if (editingProduct) {
+        const { error } = await supabase
+          .from('products')
+          .update({
+            name: productForm.name,
+            description: productForm.description,
+            long_description: productForm.long_description,
+            price: productForm.price,
+            category: productForm.category,
+            type: productForm.type,
+            image: productForm.image,
+            in_stock: productForm.in_stock,
+            featured: productForm.featured,
+            bestseller: productForm.bestseller,
+            limited_edition: productForm.limited_edition,
+          })
+          .eq('id', editingProduct);
+
+        if (error) throw error;
+        toast({ title: 'Success', description: 'Product updated successfully' });
+      } else {
+        const { error } = await supabase.from('products').insert({
+          id: productForm.id,
+          name: productForm.name,
+          description: productForm.description,
+          long_description: productForm.long_description,
+          price: productForm.price,
+          category: productForm.category,
+          type: productForm.type,
+          image: productForm.image,
+          in_stock: productForm.in_stock,
+          featured: productForm.featured,
+          bestseller: productForm.bestseller,
+          limited_edition: productForm.limited_edition,
+        });
+
+        if (error) throw error;
+        toast({ title: 'Success', description: 'Product created successfully' });
+      }
+
+      setIsProductDialogOpen(false);
+      setProductForm(initialProductForm);
+      setEditingProduct(null);
       fetchData();
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to save product',
+        variant: 'destructive',
+      });
+    } finally {
+      setProductSaving(false);
     }
   };
 
-  const toggleOfferStatus = async (offerId: string, currentStatus: boolean) => {
-    const { error } = await supabase
-      .from('offers')
-      .update({ is_active: !currentStatus })
-      .eq('id', offerId);
+  const handleEditProduct = (product: Product) => {
+    setProductForm({
+      id: product.id,
+      name: product.name,
+      description: product.description,
+      long_description: product.long_description || '',
+      price: product.price,
+      category: product.category,
+      type: product.type,
+      image: product.image,
+      in_stock: product.in_stock,
+      featured: product.featured || false,
+      bestseller: product.bestseller || false,
+      limited_edition: product.limited_edition || false,
+    });
+    setEditingProduct(product.id);
+    setIsProductDialogOpen(true);
+  };
+
+  const handleDeleteProduct = async (productId: string) => {
+    if (!confirm('Are you sure you want to delete this product?')) return;
+
+    const { error } = await supabase.from('products').delete().eq('id', productId);
 
     if (error) {
       toast({
         title: 'Error',
-        description: 'Failed to update offer status',
+        description: 'Failed to delete product',
         variant: 'destructive',
       });
     } else {
-      toast({
-        title: 'Success',
-        description: 'Offer status updated successfully',
-      });
+      toast({ title: 'Success', description: 'Product deleted successfully' });
       fetchData();
     }
   };
@@ -160,10 +266,133 @@ const Admin = () => {
         variant: 'destructive',
       });
     } else {
+      toast({ title: 'Success', description: 'Product stock updated' });
+      fetchData();
+    }
+  };
+
+  // Offer CRUD operations
+  const handleOfferSubmit = async () => {
+    if (!offerForm.title || !offerForm.description || !offerForm.code) {
       toast({
-        title: 'Success',
-        description: 'Product stock updated successfully',
+        title: 'Validation Error',
+        description: 'Please fill in all required fields',
+        variant: 'destructive',
       });
+      return;
+    }
+
+    setOfferSaving(true);
+    try {
+      if (editingOffer) {
+        const { error } = await supabase
+          .from('offers')
+          .update({
+            title: offerForm.title,
+            description: offerForm.description,
+            discount_type: offerForm.discount_type,
+            discount_value: offerForm.discount_value,
+            code: offerForm.code,
+            min_order_amount: offerForm.min_order_amount,
+            is_active: offerForm.is_active,
+          })
+          .eq('id', editingOffer);
+
+        if (error) throw error;
+        toast({ title: 'Success', description: 'Offer updated successfully' });
+      } else {
+        const { error } = await supabase.from('offers').insert({
+          title: offerForm.title,
+          description: offerForm.description,
+          discount_type: offerForm.discount_type,
+          discount_value: offerForm.discount_value,
+          code: offerForm.code,
+          min_order_amount: offerForm.min_order_amount,
+          is_active: offerForm.is_active,
+        });
+
+        if (error) throw error;
+        toast({ title: 'Success', description: 'Offer created successfully' });
+      }
+
+      setIsOfferDialogOpen(false);
+      setOfferForm(initialOfferForm);
+      setEditingOffer(null);
+      fetchData();
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to save offer',
+        variant: 'destructive',
+      });
+    } finally {
+      setOfferSaving(false);
+    }
+  };
+
+  const handleEditOffer = (offer: Offer) => {
+    setOfferForm({
+      title: offer.title,
+      description: offer.description,
+      discount_type: offer.discount_type,
+      discount_value: offer.discount_value || 0,
+      code: offer.code || '',
+      min_order_amount: offer.min_order_amount || 0,
+      is_active: offer.is_active,
+    });
+    setEditingOffer(offer.id);
+    setIsOfferDialogOpen(true);
+  };
+
+  const handleDeleteOffer = async (offerId: string) => {
+    if (!confirm('Are you sure you want to delete this offer?')) return;
+
+    const { error } = await supabase.from('offers').delete().eq('id', offerId);
+
+    if (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to delete offer',
+        variant: 'destructive',
+      });
+    } else {
+      toast({ title: 'Success', description: 'Offer deleted successfully' });
+      fetchData();
+    }
+  };
+
+  const toggleOfferStatus = async (offerId: string, currentStatus: boolean) => {
+    const { error } = await supabase
+      .from('offers')
+      .update({ is_active: !currentStatus })
+      .eq('id', offerId);
+
+    if (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to update offer status',
+        variant: 'destructive',
+      });
+    } else {
+      toast({ title: 'Success', description: 'Offer status updated' });
+      fetchData();
+    }
+  };
+
+  const updateOrderStatus = async (orderId: string, status: string, deliveryStatus: string) => {
+    const { error } = await supabase
+      .from('orders')
+      .update({ status, delivery_status: deliveryStatus })
+      .eq('id', orderId);
+
+    if (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to update order status',
+        variant: 'destructive',
+      });
+    } else {
+      toast({ title: 'Success', description: 'Order status updated' });
       fetchData();
     }
   };
@@ -205,11 +434,175 @@ const Admin = () => {
             </TabsTrigger>
           </TabsList>
 
+          {/* Products Tab */}
           <TabsContent value="products">
             <Card>
-              <CardHeader>
-                <CardTitle>Products Management</CardTitle>
-                <CardDescription>View and manage your product catalog</CardDescription>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <div>
+                  <CardTitle>Products Management</CardTitle>
+                  <CardDescription>View and manage your product catalog</CardDescription>
+                </div>
+                <Dialog open={isProductDialogOpen} onOpenChange={(open) => {
+                  setIsProductDialogOpen(open);
+                  if (!open) {
+                    setProductForm(initialProductForm);
+                    setEditingProduct(null);
+                  }
+                }}>
+                  <DialogTrigger asChild>
+                    <Button className="gap-2">
+                      <Plus className="h-4 w-4" />
+                      Add Product
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                    <DialogHeader>
+                      <DialogTitle>{editingProduct ? 'Edit Product' : 'Create New Product'}</DialogTitle>
+                      <DialogDescription>Fill in the product details below</DialogDescription>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-4">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="product-id">Product ID *</Label>
+                          <Input
+                            id="product-id"
+                            placeholder="e.g., mango-milk-6"
+                            value={productForm.id}
+                            onChange={(e) => setProductForm({ ...productForm, id: e.target.value })}
+                            disabled={!!editingProduct}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="product-name">Name *</Label>
+                          <Input
+                            id="product-name"
+                            placeholder="Product name"
+                            value={productForm.name}
+                            onChange={(e) => setProductForm({ ...productForm, name: e.target.value })}
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="product-desc">Short Description *</Label>
+                        <Textarea
+                          id="product-desc"
+                          placeholder="Brief product description"
+                          value={productForm.description}
+                          onChange={(e) => setProductForm({ ...productForm, description: e.target.value })}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="product-long-desc">Long Description</Label>
+                        <Textarea
+                          id="product-long-desc"
+                          placeholder="Detailed product description"
+                          value={productForm.long_description}
+                          onChange={(e) => setProductForm({ ...productForm, long_description: e.target.value })}
+                          rows={4}
+                        />
+                      </div>
+                      <div className="grid grid-cols-3 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="product-price">Price (₹) *</Label>
+                          <Input
+                            id="product-price"
+                            type="number"
+                            placeholder="0"
+                            value={productForm.price}
+                            onChange={(e) => setProductForm({ ...productForm, price: Number(e.target.value) })}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="product-category">Category *</Label>
+                          <Select
+                            value={productForm.category}
+                            onValueChange={(value) => setProductForm({ ...productForm, category: value })}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select category" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="Mango">Mango</SelectItem>
+                              <SelectItem value="Strawberry">Strawberry</SelectItem>
+                              <SelectItem value="Custard Apple">Custard Apple</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="product-type">Type *</Label>
+                          <Select
+                            value={productForm.type}
+                            onValueChange={(value) => setProductForm({ ...productForm, type: value })}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select type" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="milk">Milk Chocolate</SelectItem>
+                              <SelectItem value="white">White Chocolate</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="product-image">Image URL *</Label>
+                        <Input
+                          id="product-image"
+                          placeholder="https://example.com/image.jpg"
+                          value={productForm.image}
+                          onChange={(e) => setProductForm({ ...productForm, image: e.target.value })}
+                        />
+                      </div>
+                      <div className="flex flex-wrap gap-4">
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={productForm.in_stock}
+                            onChange={(e) => setProductForm({ ...productForm, in_stock: e.target.checked })}
+                            className="rounded border-input"
+                          />
+                          <span className="text-sm">In Stock</span>
+                        </label>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={productForm.featured}
+                            onChange={(e) => setProductForm({ ...productForm, featured: e.target.checked })}
+                            className="rounded border-input"
+                          />
+                          <span className="text-sm">Featured</span>
+                        </label>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={productForm.bestseller}
+                            onChange={(e) => setProductForm({ ...productForm, bestseller: e.target.checked })}
+                            className="rounded border-input"
+                          />
+                          <span className="text-sm">Bestseller</span>
+                        </label>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={productForm.limited_edition}
+                            onChange={(e) => setProductForm({ ...productForm, limited_edition: e.target.checked })}
+                            className="rounded border-input"
+                          />
+                          <span className="text-sm">Limited Edition</span>
+                        </label>
+                      </div>
+                    </div>
+                    <DialogFooter>
+                      <Button variant="outline" onClick={() => setIsProductDialogOpen(false)}>
+                        Cancel
+                      </Button>
+                      <Button onClick={handleProductSubmit} disabled={productSaving}>
+                        {productSaving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+                        {editingProduct ? 'Update' : 'Create'} Product
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
               </CardHeader>
               <CardContent>
                 <div className="rounded-md border">
@@ -239,13 +632,30 @@ const Admin = () => {
                             </Badge>
                           </TableCell>
                           <TableCell>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => toggleProductStock(product.id, product.in_stock)}
-                            >
-                              Toggle Stock
-                            </Button>
+                            <div className="flex gap-2">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => toggleProductStock(product.id, product.in_stock)}
+                              >
+                                Toggle Stock
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => handleEditProduct(product)}
+                              >
+                                <Pencil className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="text-destructive"
+                                onClick={() => handleDeleteProduct(product.id)}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
                           </TableCell>
                         </TableRow>
                       ))}
@@ -256,11 +666,121 @@ const Admin = () => {
             </Card>
           </TabsContent>
 
+          {/* Offers Tab */}
           <TabsContent value="offers">
             <Card>
-              <CardHeader>
-                <CardTitle>Offers Management</CardTitle>
-                <CardDescription>Create and manage promotional offers</CardDescription>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <div>
+                  <CardTitle>Offers Management</CardTitle>
+                  <CardDescription>Create and manage promotional offers</CardDescription>
+                </div>
+                <Dialog open={isOfferDialogOpen} onOpenChange={(open) => {
+                  setIsOfferDialogOpen(open);
+                  if (!open) {
+                    setOfferForm(initialOfferForm);
+                    setEditingOffer(null);
+                  }
+                }}>
+                  <DialogTrigger asChild>
+                    <Button className="gap-2">
+                      <Plus className="h-4 w-4" />
+                      Add Offer
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>{editingOffer ? 'Edit Offer' : 'Create New Offer'}</DialogTitle>
+                      <DialogDescription>Fill in the offer details below</DialogDescription>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="offer-title">Title *</Label>
+                        <Input
+                          id="offer-title"
+                          placeholder="Offer title"
+                          value={offerForm.title}
+                          onChange={(e) => setOfferForm({ ...offerForm, title: e.target.value })}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="offer-desc">Description *</Label>
+                        <Textarea
+                          id="offer-desc"
+                          placeholder="Offer description"
+                          value={offerForm.description}
+                          onChange={(e) => setOfferForm({ ...offerForm, description: e.target.value })}
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="offer-type">Discount Type *</Label>
+                          <Select
+                            value={offerForm.discount_type}
+                            onValueChange={(value) => setOfferForm({ ...offerForm, discount_type: value })}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select type" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="percentage">Percentage</SelectItem>
+                              <SelectItem value="fixed">Fixed Amount</SelectItem>
+                              <SelectItem value="bogo">Buy One Get One</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="offer-value">Discount Value</Label>
+                          <Input
+                            id="offer-value"
+                            type="number"
+                            placeholder="0"
+                            value={offerForm.discount_value}
+                            onChange={(e) => setOfferForm({ ...offerForm, discount_value: Number(e.target.value) })}
+                          />
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="offer-code">Promo Code *</Label>
+                          <Input
+                            id="offer-code"
+                            placeholder="SAVE20"
+                            value={offerForm.code}
+                            onChange={(e) => setOfferForm({ ...offerForm, code: e.target.value.toUpperCase() })}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="offer-min">Min Order Amount (₹)</Label>
+                          <Input
+                            id="offer-min"
+                            type="number"
+                            placeholder="0"
+                            value={offerForm.min_order_amount}
+                            onChange={(e) => setOfferForm({ ...offerForm, min_order_amount: Number(e.target.value) })}
+                          />
+                        </div>
+                      </div>
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={offerForm.is_active}
+                          onChange={(e) => setOfferForm({ ...offerForm, is_active: e.target.checked })}
+                          className="rounded border-input"
+                        />
+                        <span className="text-sm">Active</span>
+                      </label>
+                    </div>
+                    <DialogFooter>
+                      <Button variant="outline" onClick={() => setIsOfferDialogOpen(false)}>
+                        Cancel
+                      </Button>
+                      <Button onClick={handleOfferSubmit} disabled={offerSaving}>
+                        {offerSaving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+                        {editingOffer ? 'Update' : 'Create'} Offer
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
               </CardHeader>
               <CardContent>
                 <div className="rounded-md border">
@@ -294,13 +814,30 @@ const Admin = () => {
                             </Badge>
                           </TableCell>
                           <TableCell>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => toggleOfferStatus(offer.id, offer.is_active)}
-                            >
-                              Toggle Status
-                            </Button>
+                            <div className="flex gap-2">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => toggleOfferStatus(offer.id, offer.is_active)}
+                              >
+                                Toggle Status
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => handleEditOffer(offer)}
+                              >
+                                <Pencil className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="text-destructive"
+                                onClick={() => handleDeleteOffer(offer.id)}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
                           </TableCell>
                         </TableRow>
                       ))}
@@ -311,6 +848,7 @@ const Admin = () => {
             </Card>
           </TabsContent>
 
+          {/* Orders Tab */}
           <TabsContent value="orders">
             <Card>
               <CardHeader>

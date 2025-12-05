@@ -12,9 +12,18 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Package, Percent, ShoppingBag, Plus, Pencil, Trash2 } from 'lucide-react';
+import { Loader2, Package, Percent, ShoppingBag, Plus, Pencil, Trash2, BarChart3 } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import ImageUpload from '@/components/admin/ImageUpload';
+import BulkPackPricing from '@/components/admin/BulkPackPricing';
+import SalesAnalytics from '@/components/admin/SalesAnalytics';
+
+interface BulkPack {
+  size: number;
+  price: number;
+  label: string;
+}
 
 interface Product {
   id: string;
@@ -29,6 +38,7 @@ interface Product {
   featured?: boolean;
   bestseller?: boolean;
   limited_edition?: boolean;
+  bulk_packs?: unknown;
 }
 
 interface Offer {
@@ -51,6 +61,12 @@ interface Order {
   user_id: string;
 }
 
+const defaultBulkPacks: BulkPack[] = [
+  { size: 6, price: 0, label: 'Pack of 6' },
+  { size: 12, price: 0, label: 'Pack of 12' },
+  { size: 24, price: 0, label: 'Pack of 24' },
+];
+
 const initialProductForm = {
   id: '',
   name: '',
@@ -64,6 +80,7 @@ const initialProductForm = {
   featured: false,
   bestseller: false,
   limited_edition: false,
+  bulk_packs: defaultBulkPacks,
 };
 
 const initialOfferForm = {
@@ -162,6 +179,8 @@ const Admin = () => {
 
     setProductSaving(true);
     try {
+      const bulkPacksJson = JSON.parse(JSON.stringify(productForm.bulk_packs));
+      
       if (editingProduct) {
         const { error } = await supabase
           .from('products')
@@ -177,13 +196,14 @@ const Admin = () => {
             featured: productForm.featured,
             bestseller: productForm.bestseller,
             limited_edition: productForm.limited_edition,
+            bulk_packs: bulkPacksJson,
           })
           .eq('id', editingProduct);
 
         if (error) throw error;
         toast({ title: 'Success', description: 'Product updated successfully' });
       } else {
-        const { error } = await supabase.from('products').insert({
+        const { error } = await supabase.from('products').insert([{
           id: productForm.id,
           name: productForm.name,
           description: productForm.description,
@@ -196,7 +216,8 @@ const Admin = () => {
           featured: productForm.featured,
           bestseller: productForm.bestseller,
           limited_edition: productForm.limited_edition,
-        });
+          bulk_packs: bulkPacksJson,
+        }]);
 
         if (error) throw error;
         toast({ title: 'Success', description: 'Product created successfully' });
@@ -218,6 +239,7 @@ const Admin = () => {
   };
 
   const handleEditProduct = (product: Product) => {
+    const bulkPacks = Array.isArray(product.bulk_packs) ? product.bulk_packs as BulkPack[] : defaultBulkPacks;
     setProductForm({
       id: product.id,
       name: product.name,
@@ -231,6 +253,7 @@ const Admin = () => {
       featured: product.featured || false,
       bestseller: product.bestseller || false,
       limited_edition: product.limited_edition || false,
+      bulk_packs: bulkPacks,
     });
     setEditingProduct(product.id);
     setIsProductDialogOpen(true);
@@ -418,8 +441,12 @@ const Admin = () => {
           <p className="text-muted-foreground">Manage products, offers, and orders</p>
         </div>
 
-        <Tabs defaultValue="products" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-8">
+        <Tabs defaultValue="analytics" className="w-full">
+          <TabsList className="grid w-full grid-cols-4 mb-8">
+            <TabsTrigger value="analytics" className="gap-2">
+              <BarChart3 className="h-4 w-4" />
+              Analytics
+            </TabsTrigger>
             <TabsTrigger value="products" className="gap-2">
               <Package className="h-4 w-4" />
               Products
@@ -433,6 +460,11 @@ const Admin = () => {
               Orders
             </TabsTrigger>
           </TabsList>
+
+          {/* Analytics Tab */}
+          <TabsContent value="analytics">
+            <SalesAnalytics />
+          </TabsContent>
 
           {/* Products Tab */}
           <TabsContent value="products">
@@ -544,15 +576,14 @@ const Admin = () => {
                           </Select>
                         </div>
                       </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="product-image">Image URL *</Label>
-                        <Input
-                          id="product-image"
-                          placeholder="https://example.com/image.jpg"
-                          value={productForm.image}
-                          onChange={(e) => setProductForm({ ...productForm, image: e.target.value })}
-                        />
-                      </div>
+                      <ImageUpload
+                        value={productForm.image}
+                        onChange={(url) => setProductForm({ ...productForm, image: url })}
+                      />
+                      <BulkPackPricing
+                        value={productForm.bulk_packs}
+                        onChange={(packs) => setProductForm({ ...productForm, bulk_packs: packs })}
+                      />
                       <div className="flex flex-wrap gap-4">
                         <label className="flex items-center gap-2 cursor-pointer">
                           <input

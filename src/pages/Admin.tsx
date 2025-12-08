@@ -12,12 +12,13 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Package, Percent, ShoppingBag, Plus, Pencil, Trash2, BarChart3 } from 'lucide-react';
+import { Loader2, Package, Percent, ShoppingBag, Plus, Pencil, Trash2, BarChart3, MessageCircle } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import ImageUpload from '@/components/admin/ImageUpload';
 import BulkPackPricing from '@/components/admin/BulkPackPricing';
 import SalesAnalytics from '@/components/admin/SalesAnalytics';
+import WhatsAppOrderManagement from '@/components/admin/WhatsAppOrderManagement';
 
 interface BulkPack {
   size: number;
@@ -442,7 +443,7 @@ const Admin = () => {
         </div>
 
         <Tabs defaultValue="analytics" className="w-full">
-          <TabsList className="grid w-full grid-cols-4 mb-8">
+          <TabsList className="grid w-full grid-cols-5 mb-8">
             <TabsTrigger value="analytics" className="gap-2">
               <BarChart3 className="h-4 w-4" />
               Analytics
@@ -458,6 +459,10 @@ const Admin = () => {
             <TabsTrigger value="orders" className="gap-2">
               <ShoppingBag className="h-4 w-4" />
               Orders
+            </TabsTrigger>
+            <TabsTrigger value="whatsapp" className="gap-2">
+              <MessageCircle className="h-4 w-4" />
+              WhatsApp
             </TabsTrigger>
           </TabsList>
 
@@ -976,6 +981,11 @@ const Admin = () => {
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* WhatsApp Orders Tab */}
+          <TabsContent value="whatsapp">
+            <WhatsAppOrderManagement />
           </TabsContent>
         </Tabs>
       </div>

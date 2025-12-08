@@ -150,9 +150,13 @@ export type Database = {
       orders: {
         Row: {
           created_at: string | null
+          customer_email: string | null
+          customer_name: string | null
+          customer_phone: string | null
           delivery_status: string
           estimated_delivery_date: string | null
           id: string
+          order_source: string
           payment_method: string
           shipping_address: Json
           status: string
@@ -163,9 +167,13 @@ export type Database = {
         }
         Insert: {
           created_at?: string | null
+          customer_email?: string | null
+          customer_name?: string | null
+          customer_phone?: string | null
           delivery_status?: string
           estimated_delivery_date?: string | null
           id?: string
+          order_source?: string
           payment_method?: string
           shipping_address: Json
           status?: string
@@ -176,9 +184,13 @@ export type Database = {
         }
         Update: {
           created_at?: string | null
+          customer_email?: string | null
+          customer_name?: string | null
+          customer_phone?: string | null
           delivery_status?: string
           estimated_delivery_date?: string | null
           id?: string
+          order_source?: string
           payment_method?: string
           shipping_address?: Json
           status?: string

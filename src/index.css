@@ -2,150 +2,91 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  :root {
-    --luxury-brown: 30 30% 25%;
-    --luxury-gold: 45 90% 55%;
-    --luxury-cream: 40 30% 96%;
-    
-    --background: 0 0% 100%;
-    --foreground: 30 30% 15%;
-    --card: 0 0% 100%;
-    --card-foreground: 30 30% 15%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 30 30% 15%;
-    --primary: 30 30% 25%;
-    --primary-foreground: 40 30% 96%;
-    --secondary: 280 70% 50%;
-    --secondary-foreground: 0 0% 100%;
-    --muted: 40 20% 96%;
-    --muted-foreground: 30 20% 40%;
-    --accent: 320 70% 55%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 30 20% 90%;
-    --input: 30 20% 90%;
-    --ring: 30 30% 25%;
-    --radius: 0.5rem;
-  }
-}
-
-@layer utilities {
-  .gradient-luxury {
-    background: linear-gradient(135deg, hsl(var(--luxury-brown)), hsl(var(--secondary)));
-  }
-  
-  .text-gradient-luxury {
-    background: linear-gradient(135deg, hsl(var(--luxury-brown)), hsl(var(--secondary)));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  
-  .text-luxury-brown {
-    color: hsl(var(--luxury-brown));
-  }
-  
-  .text-luxury-gold {
-    color: hsl(var(--luxury-gold));
-  }
-  
-  .bg-luxury-cream {
-    background-color: hsl(var(--luxury-cream));
-  }
-  
-  .hover-lift {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-  
-  .hover-lift:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.15);
-  }
-  
-  .shadow-glow {
-    box-shadow: 0 10px 40px -10px hsl(var(--secondary) / 0.4);
-  }
-}
-
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
+/* ChocoElite Design System - Premium Chocolate Brand
+   Warm browns, rich golds, creamy tones for luxury feel
+   All colors MUST be HSL
 */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 25 10% 15%;
+    /* Core chocolate palette */
+    --luxury-brown: 25 55% 22%;
+    --luxury-brown-light: 25 45% 35%;
+    --luxury-gold: 42 85% 55%;
+    --luxury-gold-dark: 38 75% 45%;
+    --luxury-cream: 40 40% 97%;
+    --luxury-cocoa: 20 35% 18%;
+    
+    /* Semantic colors */
+    --background: 40 30% 98%;
+    --foreground: 25 40% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 25 10% 15%;
+    --card-foreground: 25 40% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 25 10% 15%;
+    --popover-foreground: 25 40% 15%;
 
-    /* Rich chocolate brown */
-    --primary: 25 45% 25%;
-    --primary-foreground: 0 0% 100%;
+    /* Rich chocolate brown - primary brand color */
+    --primary: 25 55% 22%;
+    --primary-foreground: 40 40% 97%;
 
-    /* Luxurious purple */
-    --secondary: 280 65% 55%;
-    --secondary-foreground: 0 0% 100%;
+    /* Warm gold accent */
+    --secondary: 42 85% 55%;
+    --secondary-foreground: 25 55% 15%;
 
-    --muted: 280 20% 96%;
-    --muted-foreground: 280 10% 40%;
+    --muted: 40 25% 94%;
+    --muted-foreground: 25 20% 45%;
 
-    /* Pink accent */
-    --accent: 320 75% 65%;
+    /* Rich amber accent */
+    --accent: 38 75% 45%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 280 15% 90%;
-    --input: 280 15% 90%;
-    --ring: 280 65% 55%;
+    --border: 35 25% 88%;
+    --input: 35 25% 88%;
+    --ring: 25 55% 22%;
 
     --radius: 0.75rem;
 
-    /* Custom chocolate theme colors */
-    --chocolate: 25 45% 25%;
-    --chocolate-light: 25 40% 45%;
-    --purple-gradient-start: 280 65% 55%;
-    --purple-gradient-end: 320 75% 65%;
+    /* Gradient endpoints */
+    --gradient-start: 25 55% 22%;
+    --gradient-end: 38 75% 45%;
     
     /* Shadows */
-    --shadow-glow: 280 65% 55%;
+    --shadow-warm: 25 55% 22%;
   }
 
   .dark {
-    --background: 25 15% 10%;
-    --foreground: 0 0% 95%;
+    --background: 25 25% 8%;
+    --foreground: 40 30% 95%;
 
-    --card: 25 20% 15%;
-    --card-foreground: 0 0% 95%;
+    --card: 25 25% 12%;
+    --card-foreground: 40 30% 95%;
 
-    --popover: 25 20% 15%;
-    --popover-foreground: 0 0% 95%;
+    --popover: 25 25% 12%;
+    --popover-foreground: 40 30% 95%;
 
-    --primary: 25 50% 35%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 42 75% 50%;
+    --primary-foreground: 25 35% 10%;
 
-    --secondary: 280 60% 45%;
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 25 45% 30%;
+    --secondary-foreground: 40 30% 95%;
 
-    --muted: 280 15% 20%;
-    --muted-foreground: 280 10% 70%;
+    --muted: 25 20% 18%;
+    --muted-foreground: 40 20% 65%;
 
-    --accent: 320 70% 55%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 38 70% 50%;
+    --accent-foreground: 25 35% 10%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 280 15% 25%;
-    --input: 280 15% 25%;
-    --ring: 280 60% 45%;
+    --border: 25 20% 22%;
+    --input: 25 20% 22%;
+    --ring: 42 75% 50%;
   }
 }
 
@@ -165,23 +106,76 @@ All colors MUST be HSL.
 }
 
 @layer utilities {
-  .gradient-purple-pink {
-    background: linear-gradient(135deg, hsl(var(--purple-gradient-start)), hsl(var(--purple-gradient-end)));
+  /* Premium gradients */
+  .gradient-luxury {
+    background: linear-gradient(135deg, hsl(var(--luxury-brown)), hsl(var(--luxury-gold-dark)));
+  }
+  
+  .gradient-hero {
+    background: linear-gradient(135deg, hsl(var(--luxury-cocoa)), hsl(var(--luxury-brown)));
   }
 
-  .gradient-chocolate {
-    background: linear-gradient(180deg, hsl(var(--chocolate)), hsl(var(--chocolate-light)));
+  .gradient-gold {
+    background: linear-gradient(135deg, hsl(var(--luxury-gold)), hsl(var(--luxury-gold-dark)));
   }
 
+  .gradient-warm {
+    background: linear-gradient(180deg, hsl(var(--luxury-cream)), hsl(40 35% 92%));
+  }
+
+  /* Text gradients */
   .text-gradient {
     @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(135deg, hsl(var(--purple-gradient-start)), hsl(var(--purple-gradient-end)));
+    background-image: linear-gradient(135deg, hsl(var(--luxury-brown)), hsl(var(--luxury-gold-dark)));
+  }
+
+  .text-gradient-luxury {
+    background: linear-gradient(135deg, hsl(var(--luxury-brown)), hsl(var(--luxury-gold)));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  /* Brand colors as utilities */
+  .text-luxury-brown {
+    color: hsl(var(--luxury-brown));
+  }
+  
+  .text-luxury-gold {
+    color: hsl(var(--luxury-gold));
+  }
+  
+  .bg-luxury-cream {
+    background-color: hsl(var(--luxury-cream));
+  }
+
+  .bg-luxury-brown {
+    background-color: hsl(var(--luxury-brown));
+  }
+
+  .bg-luxury-gold {
+    background-color: hsl(var(--luxury-gold));
+  }
+
+  /* Interactive effects */
+  .hover-lift {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px -10px hsl(var(--shadow-warm) / 0.25);
   }
 
   .shadow-glow {
-    box-shadow: 0 10px 40px -10px hsl(var(--shadow-glow) / 0.4);
+    box-shadow: 0 10px 40px -10px hsl(var(--luxury-gold) / 0.35);
   }
 
+  .shadow-warm {
+    box-shadow: 0 8px 30px -8px hsl(var(--luxury-brown) / 0.2);
+  }
+
+  /* Animations */
   .animate-fade-in-up {
     animation: fade-in-up 0.6s ease-out;
   }
@@ -195,15 +189,6 @@ All colors MUST be HSL.
       opacity: 1;
       transform: translateY(0);
     }
-  }
-
-  .hover-lift {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-
-  .hover-lift:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 40px -10px hsl(var(--shadow-glow) / 0.3);
   }
 
   @keyframes grid-move {

@@ -22,19 +22,11 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-      setIsMobileMenuOpen(false);
-    }
-  };
-
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         isScrolled
-          ? "bg-background/98 backdrop-blur-xl shadow-2xl border-b border-white/10"
+          ? "bg-background/98 backdrop-blur-xl shadow-2xl border-b border-amber-200/20"
           : "bg-gradient-to-b from-black/40 via-black/20 to-transparent backdrop-blur-lg"
       }`}
     >
@@ -47,8 +39,7 @@ const Navbar = () => {
             <img 
               src={monogramLogo} 
               alt="ChocoElite Monogram" 
-              className="h-10 w-10 md:h-12 md:w-12 transition-transform duration-300 group-hover:scale-110 drop-shadow-lg mix-blend-lighten"
-              style={{ filter: 'drop-shadow(0 0 10px rgba(139, 92, 246, 0.5))' }}
+              className="h-10 w-10 md:h-12 md:w-12 transition-transform duration-300 group-hover:scale-110 drop-shadow-lg"
             />
             <div className="flex flex-col">
               <span className={`text-2xl md:text-3xl font-display font-bold transition-colors duration-300 ${
@@ -57,7 +48,7 @@ const Navbar = () => {
                 ChocoElite
               </span>
               <span className={`text-[10px] md:text-xs font-medium tracking-wider -mt-1 transition-colors duration-300 ${
-                isScrolled ? "text-muted-foreground" : "text-white/90"
+                isScrolled ? "text-muted-foreground" : "text-amber-200/90"
               }`}>
                 FRUIT AT EVERY BITE
               </span>
@@ -68,29 +59,29 @@ const Navbar = () => {
           <div className="hidden md:flex items-center gap-8">
             <Link to="/shop" className={`relative font-semibold transition-all duration-300 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 hover:after:w-full after:transition-all after:duration-300 ${
               isScrolled 
-                ? "text-foreground hover:text-foreground/80 after:bg-foreground" 
-                : "text-white hover:text-white/90 after:bg-white drop-shadow-lg"
+                ? "text-foreground hover:text-foreground/80 after:bg-amber-600" 
+                : "text-white hover:text-amber-200 after:bg-amber-400 drop-shadow-lg"
             }`}>
               Shop
             </Link>
             <Link to="/about" className={`relative font-semibold transition-all duration-300 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 hover:after:w-full after:transition-all after:duration-300 ${
               isScrolled 
-                ? "text-foreground hover:text-foreground/80 after:bg-foreground" 
-                : "text-white hover:text-white/90 after:bg-white drop-shadow-lg"
+                ? "text-foreground hover:text-foreground/80 after:bg-amber-600" 
+                : "text-white hover:text-amber-200 after:bg-amber-400 drop-shadow-lg"
             }`}>
               About
             </Link>
             <Link to="/blog" className={`relative font-semibold transition-all duration-300 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 hover:after:w-full after:transition-all after:duration-300 ${
               isScrolled 
-                ? "text-foreground hover:text-foreground/80 after:bg-foreground" 
-                : "text-white hover:text-white/90 after:bg-white drop-shadow-lg"
+                ? "text-foreground hover:text-foreground/80 after:bg-amber-600" 
+                : "text-white hover:text-amber-200 after:bg-amber-400 drop-shadow-lg"
             }`}>
               Blog
             </Link>
             <Link to="/contact" className={`relative font-semibold transition-all duration-300 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 hover:after:w-full after:transition-all after:duration-300 ${
               isScrolled 
-                ? "text-foreground hover:text-foreground/80 after:bg-foreground" 
-                : "text-white hover:text-white/90 after:bg-white drop-shadow-lg"
+                ? "text-foreground hover:text-foreground/80 after:bg-amber-600" 
+                : "text-white hover:text-amber-200 after:bg-amber-400 drop-shadow-lg"
             }`}>
               Contact
             </Link>
@@ -106,7 +97,7 @@ const Navbar = () => {
             >
               <ShoppingCart className="h-5 w-5" />
               {totalItems > 0 && (
-                <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 bg-gradient-to-r from-purple-500 to-pink-500 text-white border-2 border-white shadow-lg animate-pulse">{totalItems}</Badge>
+                <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 bg-amber-500 text-amber-950 border-2 border-white shadow-lg">{totalItems}</Badge>
               )}
             </Button>
             {user ? (
@@ -139,7 +130,7 @@ const Navbar = () => {
             ) : (
               <Button 
                 onClick={() => navigate("/auth")} 
-                className="bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600"
+                className="bg-amber-500 text-amber-950 hover:bg-amber-400 font-semibold"
               >
                 Sign In
               </Button>
@@ -168,50 +159,34 @@ const Navbar = () => {
           </button>
         </div>
 
-          {/* Mobile Menu */}
+        {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden mt-4 pb-4 space-y-3 bg-black/30 backdrop-blur-xl rounded-2xl p-4 border border-white/10 shadow-2xl animate-fade-in-up">
+          <div className="md:hidden mt-4 pb-4 space-y-3 bg-amber-950/90 backdrop-blur-xl rounded-2xl p-4 border border-amber-800/30 shadow-2xl animate-fade-in-up">
             <Link
               to="/shop"
               onClick={() => setIsMobileMenuOpen(false)}
-              className={`block w-full text-left py-3 px-4 font-semibold rounded-lg transition-all duration-300 ${
-                isScrolled 
-                  ? "text-foreground hover:bg-foreground/10" 
-                  : "text-white hover:bg-white/10"
-              }`}
+              className="block w-full text-left py-3 px-4 font-semibold rounded-lg transition-all duration-300 text-amber-100 hover:bg-amber-800/50"
             >
               Shop
             </Link>
             <Link
               to="/about"
               onClick={() => setIsMobileMenuOpen(false)}
-              className={`block w-full text-left py-3 px-4 font-semibold rounded-lg transition-all duration-300 ${
-                isScrolled 
-                  ? "text-foreground hover:bg-foreground/10" 
-                  : "text-white hover:bg-white/10"
-              }`}
+              className="block w-full text-left py-3 px-4 font-semibold rounded-lg transition-all duration-300 text-amber-100 hover:bg-amber-800/50"
             >
               About
             </Link>
             <Link
               to="/blog"
               onClick={() => setIsMobileMenuOpen(false)}
-              className={`block w-full text-left py-3 px-4 font-semibold rounded-lg transition-all duration-300 ${
-                isScrolled 
-                  ? "text-foreground hover:bg-foreground/10" 
-                  : "text-white hover:bg-white/10"
-              }`}
+              className="block w-full text-left py-3 px-4 font-semibold rounded-lg transition-all duration-300 text-amber-100 hover:bg-amber-800/50"
             >
               Blog
             </Link>
             <Link
               to="/contact"
               onClick={() => setIsMobileMenuOpen(false)}
-              className={`block w-full text-left py-3 px-4 font-semibold rounded-lg transition-all duration-300 ${
-                isScrolled 
-                  ? "text-foreground hover:bg-foreground/10" 
-                  : "text-white hover:bg-white/10"
-              }`}
+              className="block w-full text-left py-3 px-4 font-semibold rounded-lg transition-all duration-300 text-amber-100 hover:bg-amber-800/50"
             >
               Contact
             </Link>
@@ -220,7 +195,7 @@ const Navbar = () => {
                 navigate("/cart");
                 setIsMobileMenuOpen(false);
               }}
-              className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold hover:from-purple-600 hover:to-pink-600 shadow-lg"
+              className="w-full bg-amber-500 text-amber-950 font-semibold hover:bg-amber-400 shadow-lg"
             >
               View Cart ({totalItems})
             </Button>
@@ -232,7 +207,7 @@ const Navbar = () => {
                     setIsMobileMenuOpen(false);
                   }}
                   variant="outline"
-                  className="w-full"
+                  className="w-full border-amber-700 text-amber-100 hover:bg-amber-800/50"
                 >
                   <User className="mr-2 h-4 w-4" />
                   My Account
@@ -243,7 +218,7 @@ const Navbar = () => {
                     setIsMobileMenuOpen(false);
                   }}
                   variant="outline"
-                  className="w-full"
+                  className="w-full border-amber-700 text-amber-100 hover:bg-amber-800/50"
                 >
                   <LogOut className="mr-2 h-4 w-4" />
                   Sign Out
@@ -255,7 +230,7 @@ const Navbar = () => {
                   navigate("/auth");
                   setIsMobileMenuOpen(false);
                 }}
-                className="w-full bg-gradient-to-r from-purple-500 to-pink-500"
+                className="w-full bg-amber-500 text-amber-950 hover:bg-amber-400"
               >
                 Sign In
               </Button>

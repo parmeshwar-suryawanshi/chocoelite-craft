@@ -130,7 +130,7 @@ const WhatsAppBot = () => {
                   <div
                     className={`max-w-[80%] rounded-lg p-3 ${
                       msg.role === 'user'
-                        ? 'bg-secondary text-white'
+                        ? 'bg-amber-600 text-white'
                         : 'bg-muted text-foreground'
                     }`}
                   >
@@ -142,9 +142,9 @@ const WhatsAppBot = () => {
                 <div className="flex justify-start">
                   <div className="bg-muted rounded-lg p-3">
                     <div className="flex gap-1">
-                      <div className="w-2 h-2 rounded-full bg-secondary animate-bounce" />
-                      <div className="w-2 h-2 rounded-full bg-secondary animate-bounce delay-100" />
-                      <div className="w-2 h-2 rounded-full bg-secondary animate-bounce delay-200" />
+                      <div className="w-2 h-2 rounded-full bg-amber-600 animate-bounce" />
+                      <div className="w-2 h-2 rounded-full bg-amber-600 animate-bounce delay-100" />
+                      <div className="w-2 h-2 rounded-full bg-amber-600 animate-bounce delay-200" />
                     </div>
                   </div>
                 </div>

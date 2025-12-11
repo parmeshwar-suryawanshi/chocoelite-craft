@@ -2,10 +2,11 @@ import { Link } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { ShoppingCart, Star, Heart, Eye, Plus } from 'lucide-react';
+import { ShoppingCart, Star, Heart, Eye, Plus, GitCompare } from 'lucide-react';
 import { Product } from '@/data/products';
 import { useCart } from '@/contexts/CartContext';
 import { useWishlist } from '@/hooks/useWishlist';
+import { useCompare } from '@/contexts/CompareContext';
 import { useState } from 'react';
 import ProductQuickView from './ProductQuickView';
 
@@ -17,6 +18,7 @@ interface ProductCardProps {
 const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
   const { addToCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
+  const { addToCompare, isInCompare } = useCompare();
   const [quickViewOpen, setQuickViewOpen] = useState(false);
   const [isImageHovered, setIsImageHovered] = useState(false);
 
@@ -36,6 +38,12 @@ const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
     e.preventDefault();
     e.stopPropagation();
     toggleWishlist(product.id);
+  };
+
+  const handleCompare = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    addToCompare(product);
   };
 
   const handleQuickView = (e: React.MouseEvent) => {
@@ -76,21 +84,37 @@ const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
               isImageHovered ? 'opacity-100' : 'opacity-0'
             }`} />
 
-            {/* Wishlist Button */}
-            <Button
-              onClick={handleWishlist}
-              size="icon"
-              variant="ghost"
-              className={`absolute top-4 left-4 bg-white/90 backdrop-blur-sm hover:bg-white shadow-md transition-all duration-300 ${
-                isImageHovered ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'
-              }`}
-            >
-              <Heart
-                className={`h-5 w-5 transition-colors ${
-                  isInWishlist(product.id) ? 'fill-red-500 text-red-500' : 'text-luxury-brown'
+            {/* Action Buttons - Left Side */}
+            <div className={`absolute top-4 left-4 flex flex-col gap-2 transition-all duration-300 ${
+              isImageHovered ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-2'
+            }`}>
+              <Button
+                onClick={handleWishlist}
+                size="icon"
+                variant="ghost"
+                className="bg-white/90 backdrop-blur-sm hover:bg-white shadow-md h-9 w-9"
+              >
+                <Heart
+                  className={`h-4 w-4 transition-colors ${
+                    isInWishlist(product.id) ? 'fill-red-500 text-red-500' : 'text-luxury-brown'
+                  }`}
+                />
+              </Button>
+              <Button
+                onClick={handleCompare}
+                size="icon"
+                variant="ghost"
+                className={`bg-white/90 backdrop-blur-sm hover:bg-white shadow-md h-9 w-9 ${
+                  isInCompare(product.id) ? 'bg-luxury-gold/20' : ''
                 }`}
-              />
-            </Button>
+              >
+                <GitCompare
+                  className={`h-4 w-4 transition-colors ${
+                    isInCompare(product.id) ? 'text-luxury-gold' : 'text-luxury-brown'
+                  }`}
+                />
+              </Button>
+            </div>
 
             {/* Badges */}
             <div className="absolute top-4 right-4 flex flex-col gap-2">

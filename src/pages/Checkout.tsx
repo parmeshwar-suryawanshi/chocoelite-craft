@@ -39,6 +39,40 @@ const Checkout = () => {
   const shipping = totalPrice >= 1000 ? 0 : 50;
   const finalTotal = totalPrice + shipping;
 
+  const sendOrderToWhatsApp = (orderId: string) => {
+    const phoneNumber = '919130032225';
+    
+    const itemsList = items.map(item => 
+      `• ${item.name} x${item.quantity} - ₹${item.price * item.quantity}`
+    ).join('\n');
+    
+    const message = `🍫 *New Order from ChocoElite*
+
+📋 *Order ID:* ${orderId}
+
+👤 *Customer Details:*
+Name: ${formData.firstName} ${formData.lastName}
+Email: ${formData.email}
+Phone: ${formData.phone}
+
+📍 *Shipping Address:*
+${formData.address}
+${formData.city}, ${formData.state} - ${formData.pincode}
+
+🛒 *Order Items:*
+${itemsList}
+
+💰 *Order Summary:*
+Subtotal: ₹${totalPrice}
+Shipping: ${shipping === 0 ? 'FREE' : `₹${shipping}`}
+*Total: ₹${finalTotal}*
+
+💳 *Payment:* Cash on Delivery`;
+
+    const encodedMessage = encodeURIComponent(message);
+    window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank');
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
@@ -74,7 +108,7 @@ const Checkout = () => {
           user_id: user.id,
           total_amount: finalTotal,
           shipping_address: shippingAddress,
-          payment_method: 'card',
+          payment_method: 'cod',
           status: 'pending'
         })
         .select()
@@ -97,11 +131,14 @@ const Checkout = () => {
 
       if (itemsError) throw itemsError;
 
+      // Send order to WhatsApp
+      sendOrderToWhatsApp(order.id);
+
       await clearCart();
       
       toast({
         title: 'Order Placed Successfully! 🎉',
-        description: 'Thank you for your order. Check your profile for order details.',
+        description: 'Your order has been sent to our team via WhatsApp.',
       });
       
       navigate('/profile');
@@ -243,9 +280,13 @@ const Checkout = () => {
                 <Card>
                   <CardContent className="p-6">
                     <h2 className="text-2xl font-semibold mb-6">Payment Method</h2>
-                    <p className="text-muted-foreground">
-                      Payment gateway integration would be implemented here (Razorpay, Stripe, etc.)
-                    </p>
+                    <div className="flex items-center gap-3 p-4 border rounded-lg bg-amber-50 border-amber-200">
+                      <div className="w-4 h-4 rounded-full bg-amber-600 border-4 border-amber-200"></div>
+                      <div>
+                        <p className="font-medium">Cash on Delivery</p>
+                        <p className="text-sm text-muted-foreground">Pay when you receive your order</p>
+                      </div>
+                    </div>
                   </CardContent>
                 </Card>
               </div>

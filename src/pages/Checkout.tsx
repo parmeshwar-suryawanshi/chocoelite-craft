@@ -12,12 +12,16 @@ import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { CheckCircle, MessageCircle } from 'lucide-react';
 
 const Checkout = () => {
   const { items, totalPrice, clearCart } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [orderSuccess, setOrderSuccess] = useState(false);
+  const [whatsappUrl, setWhatsappUrl] = useState('');
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -39,7 +43,7 @@ const Checkout = () => {
   const shipping = totalPrice >= 1000 ? 0 : 50;
   const finalTotal = totalPrice + shipping;
 
-  const sendOrderToWhatsApp = (orderId: string) => {
+  const generateWhatsAppUrl = (orderId: string) => {
     const phoneNumber = '919130032225';
     
     const itemsList = items.map(item => 
@@ -70,16 +74,7 @@ Shipping: ${shipping === 0 ? 'FREE' : `₹${shipping}`}
 💳 *Payment:* Cash on Delivery`;
 
     const encodedMessage = encodeURIComponent(message);
-    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
-    
-    // Use anchor element click to avoid popup blockers
-    const link = document.createElement('a');
-    link.href = whatsappUrl;
-    link.target = '_blank';
-    link.rel = 'noopener noreferrer';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    return `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -140,17 +135,12 @@ Shipping: ${shipping === 0 ? 'FREE' : `₹${shipping}`}
 
       if (itemsError) throw itemsError;
 
-      // Send order to WhatsApp
-      sendOrderToWhatsApp(order.id);
+      // Generate WhatsApp URL and show success modal
+      const url = generateWhatsAppUrl(order.id);
+      setWhatsappUrl(url);
 
       await clearCart();
-      
-      toast({
-        title: 'Order Placed Successfully! 🎉',
-        description: 'Your order has been sent to our team via WhatsApp.',
-      });
-      
-      navigate('/profile');
+      setOrderSuccess(true);
     } catch (error: any) {
       toast({
         title: 'Order Failed',
@@ -166,7 +156,16 @@ Shipping: ${shipping === 0 ? 'FREE' : `₹${shipping}`}
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  if (items.length === 0) {
+  const handleWhatsAppClick = () => {
+    window.location.href = whatsappUrl;
+  };
+
+  const handleCloseSuccess = () => {
+    setOrderSuccess(false);
+    navigate('/profile');
+  };
+
+  if (items.length === 0 && !orderSuccess) {
     navigate('/cart');
     return null;
   }
@@ -363,6 +362,35 @@ Shipping: ${shipping === 0 ? 'FREE' : `₹${shipping}`}
         </div>
       </div>
       <Footer />
+
+      {/* Order Success Modal */}
+      <Dialog open={orderSuccess} onOpenChange={handleCloseSuccess}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-green-600">
+              <CheckCircle className="w-6 h-6" />
+              Order Placed Successfully!
+            </DialogTitle>
+            <DialogDescription className="text-base pt-2">
+              Your order has been placed. Please send the order details to our team via WhatsApp for confirmation.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex flex-col gap-4 mt-4">
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
+            >
+              <MessageCircle className="w-5 h-5" />
+              Send Order on WhatsApp
+            </a>
+            <Button variant="outline" onClick={handleCloseSuccess}>
+              View My Orders
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };

@@ -13,7 +13,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { CheckCircle, MessageCircle } from 'lucide-react';
+import { CheckCircle, MessageCircle, Copy, Check } from 'lucide-react';
 
 const Checkout = () => {
   const { items, totalPrice, clearCart } = useCart();
@@ -22,7 +22,9 @@ const Checkout = () => {
   const [loading, setLoading] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState(false);
   const [whatsappUrl, setWhatsappUrl] = useState('');
+  const [whatsappMessage, setWhatsappMessage] = useState('');
   const [trackingToken, setTrackingToken] = useState('');
+  const [copied, setCopied] = useState(false);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -44,7 +46,7 @@ const Checkout = () => {
   const shipping = totalPrice >= 1000 ? 0 : 50;
   const finalTotal = totalPrice + shipping;
 
-  const generateWhatsAppUrl = (orderId: string, trackingCode: string) => {
+  const generateWhatsAppData = (orderId: string, trackingCode: string) => {
     const phoneNumber = '919130032225';
     
     const itemsList = items.map(item => 
@@ -76,7 +78,10 @@ Shipping: ${shipping === 0 ? 'FREE' : `₹${shipping}`}
 💳 *Payment:* Cash on Delivery`;
 
     const encodedMessage = encodeURIComponent(message);
-    return `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+    return {
+      url: `https://wa.me/${phoneNumber}?text=${encodedMessage}`,
+      message
+    };
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -138,8 +143,9 @@ Shipping: ${shipping === 0 ? 'FREE' : `₹${shipping}`}
       if (itemsError) throw itemsError;
 
       // Generate WhatsApp URL and show success modal
-      const url = generateWhatsAppUrl(order.id, order.tracking_token);
+      const { url, message } = generateWhatsAppData(order.id, order.tracking_token);
       setWhatsappUrl(url);
+      setWhatsappMessage(message);
       setTrackingToken(order.tracking_token);
 
       await clearCart();
@@ -159,12 +165,20 @@ Shipping: ${shipping === 0 ? 'FREE' : `₹${shipping}`}
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleWhatsAppClick = () => {
-    window.location.href = whatsappUrl;
+  const handleCopyMessage = async () => {
+    try {
+      await navigator.clipboard.writeText(whatsappMessage);
+      setCopied(true);
+      toast({ title: 'Copied!', description: 'Message copied. Send it to +91 9130032225 on WhatsApp.' });
+      setTimeout(() => setCopied(false), 3000);
+    } catch {
+      toast({ title: 'Copy failed', description: 'Please manually copy the message.', variant: 'destructive' });
+    }
   };
 
   const handleCloseSuccess = () => {
     setOrderSuccess(false);
+    setCopied(false);
     navigate('/profile');
   };
 
@@ -388,7 +402,7 @@ Shipping: ${shipping === 0 ? 'FREE' : `₹${shipping}`}
             </p>
           </div>
           
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-3">
             <a
               href={whatsappUrl}
               target="_blank"
@@ -398,6 +412,17 @@ Shipping: ${shipping === 0 ? 'FREE' : `₹${shipping}`}
               <MessageCircle className="w-5 h-5" />
               Send Order on WhatsApp
             </a>
+            <Button
+              variant="secondary"
+              onClick={handleCopyMessage}
+              className="flex items-center justify-center gap-2"
+            >
+              {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+              {copied ? 'Copied!' : 'Copy Message (Fallback)'}
+            </Button>
+            <p className="text-xs text-center text-muted-foreground">
+              If the button doesn't work, copy the message and send to +91 9130032225
+            </p>
             <Button variant="outline" onClick={handleCloseSuccess}>
               View My Orders
             </Button>

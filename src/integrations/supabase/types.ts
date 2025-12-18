@@ -162,6 +162,7 @@ export type Database = {
           status: string
           total_amount: number
           tracking_notes: string | null
+          tracking_token: string | null
           updated_at: string | null
           user_id: string
         }
@@ -179,6 +180,7 @@ export type Database = {
           status?: string
           total_amount: number
           tracking_notes?: string | null
+          tracking_token?: string | null
           updated_at?: string | null
           user_id: string
         }
@@ -196,6 +198,7 @@ export type Database = {
           status?: string
           total_amount?: number
           tracking_notes?: string | null
+          tracking_token?: string | null
           updated_at?: string | null
           user_id?: string
         }
@@ -404,6 +407,28 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_order_tracking: {
+        Args: { p_tracking_token: string }
+        Returns: {
+          city: string
+          created_at: string
+          delivery_status: string
+          estimated_delivery_date: string
+          order_id: string
+          status: string
+          total_amount: number
+          tracking_notes: string
+        }[]
+      }
+      get_order_tracking_items: {
+        Args: { p_tracking_token: string }
+        Returns: {
+          price: number
+          product_image: string
+          product_name: string
+          quantity: number
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

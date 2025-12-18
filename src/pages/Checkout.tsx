@@ -22,6 +22,7 @@ const Checkout = () => {
   const [loading, setLoading] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState(false);
   const [whatsappUrl, setWhatsappUrl] = useState('');
+  const [trackingToken, setTrackingToken] = useState('');
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -43,7 +44,7 @@ const Checkout = () => {
   const shipping = totalPrice >= 1000 ? 0 : 50;
   const finalTotal = totalPrice + shipping;
 
-  const generateWhatsAppUrl = (orderId: string) => {
+  const generateWhatsAppUrl = (orderId: string, trackingCode: string) => {
     const phoneNumber = '919130032225';
     
     const itemsList = items.map(item => 
@@ -52,7 +53,8 @@ const Checkout = () => {
     
     const message = `🍫 *New Order from ChocoElite*
 
-📋 *Order ID:* ${orderId}
+📋 *Order ID:* ${orderId.substring(0, 8)}
+🔗 *Tracking Code:* ${trackingCode}
 
 👤 *Customer Details:*
 Name: ${formData.firstName} ${formData.lastName}
@@ -136,8 +138,9 @@ Shipping: ${shipping === 0 ? 'FREE' : `₹${shipping}`}
       if (itemsError) throw itemsError;
 
       // Generate WhatsApp URL and show success modal
-      const url = generateWhatsAppUrl(order.id);
+      const url = generateWhatsAppUrl(order.id, order.tracking_token);
       setWhatsappUrl(url);
+      setTrackingToken(order.tracking_token);
 
       await clearCart();
       setOrderSuccess(true);
@@ -375,7 +378,17 @@ Shipping: ${shipping === 0 ? 'FREE' : `₹${shipping}`}
               Your order has been placed. Please send the order details to our team via WhatsApp for confirmation.
             </DialogDescription>
           </DialogHeader>
-          <div className="flex flex-col gap-4 mt-4">
+          
+          {/* Tracking Code Display */}
+          <div className="bg-muted p-4 rounded-lg my-4">
+            <p className="text-sm text-muted-foreground mb-1">Your Tracking Code</p>
+            <p className="text-lg font-mono font-bold text-primary">{trackingToken}</p>
+            <p className="text-xs text-muted-foreground mt-2">
+              Save this code to track your order at /track-order
+            </p>
+          </div>
+          
+          <div className="flex flex-col gap-4">
             <a
               href={whatsappUrl}
               target="_blank"

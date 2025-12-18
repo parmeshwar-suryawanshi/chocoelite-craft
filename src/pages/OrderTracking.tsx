@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SEO from "@/components/SEO";
@@ -11,11 +10,29 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Package, Truck, CheckCircle, Clock, MapPin } from "lucide-react";
 
+interface TrackingData {
+  order_id: string;
+  delivery_status: string;
+  status: string;
+  estimated_delivery_date: string | null;
+  tracking_notes: string | null;
+  created_at: string;
+  total_amount: number;
+  city: string;
+}
+
+interface OrderItem {
+  product_name: string;
+  product_image: string;
+  quantity: number;
+  price: number;
+}
+
 const OrderTracking = () => {
-  const [orderId, setOrderId] = useState("");
-  const [orderData, setOrderData] = useState<any>(null);
+  const [trackingToken, setTrackingToken] = useState("");
+  const [trackingData, setTrackingData] = useState<TrackingData | null>(null);
+  const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -63,34 +80,37 @@ const OrderTracking = () => {
   ];
 
   const handleTrackOrder = async () => {
-    if (!orderId.trim()) {
-      toast.error("Please enter an order ID");
+    if (!trackingToken.trim()) {
+      toast.error("Please enter a tracking code");
       return;
     }
 
     setLoading(true);
     try {
-      const { data, error } = await supabase
-        .from("orders")
-        .select(`
-          *,
-          order_items (
-            *
-          )
-        `)
-        .eq("id", orderId)
-        .single();
+      // Call the secure tracking function (no PII exposed)
+      const { data: trackingResult, error: trackingError } = await supabase
+        .rpc('get_order_tracking', { p_tracking_token: trackingToken.trim() });
 
-      if (error) {
-        toast.error("Order not found. Please check your order ID.");
-        setOrderData(null);
+      if (trackingError || !trackingResult || trackingResult.length === 0) {
+        toast.error("Order not found. Please check your tracking code.");
+        setTrackingData(null);
+        setOrderItems([]);
         return;
       }
 
-      setOrderData(data);
+      setTrackingData(trackingResult[0]);
+
+      // Get order items (also secure, no PII)
+      const { data: itemsResult, error: itemsError } = await supabase
+        .rpc('get_order_tracking_items', { p_tracking_token: trackingToken.trim() });
+
+      if (!itemsError && itemsResult) {
+        setOrderItems(itemsResult);
+      }
     } catch (error) {
       toast.error("Failed to fetch order details");
-      setOrderData(null);
+      setTrackingData(null);
+      setOrderItems([]);
     } finally {
       setLoading(false);
     }
@@ -113,22 +133,22 @@ const OrderTracking = () => {
           <div className="max-w-4xl mx-auto">
             <h1 className="text-4xl font-bold text-center mb-2">Track Your Order</h1>
             <p className="text-muted-foreground text-center mb-8">
-              Enter your order ID to see real-time delivery status
+              Enter your tracking code to see real-time delivery status
             </p>
 
             <Card className="mb-8">
               <CardHeader>
-                <CardTitle>Enter Order Details</CardTitle>
+                <CardTitle>Enter Tracking Code</CardTitle>
                 <CardDescription>
-                  Your order ID was sent to your email after purchase
+                  Your tracking code (TRK-XXXXXXXX-XXXXXX) was sent to you after purchase
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="flex gap-4">
                   <Input
-                    placeholder="Enter your order ID"
-                    value={orderId}
-                    onChange={(e) => setOrderId(e.target.value)}
+                    placeholder="Enter your tracking code (e.g., TRK-A1B2C3D4-E5F6G7)"
+                    value={trackingToken}
+                    onChange={(e) => setTrackingToken(e.target.value)}
                     onKeyPress={(e) => e.key === "Enter" && handleTrackOrder()}
                   />
                   <Button onClick={handleTrackOrder} disabled={loading}>
@@ -138,19 +158,19 @@ const OrderTracking = () => {
               </CardContent>
             </Card>
 
-            {orderData && (
+            {trackingData && (
               <div className="space-y-6">
                 <Card>
                   <CardHeader>
                     <div className="flex items-center justify-between">
                       <div>
-                        <CardTitle>Order #{orderData.id.slice(0, 8)}</CardTitle>
+                        <CardTitle>Order #{trackingData.order_id}</CardTitle>
                         <CardDescription>
-                          Placed on {new Date(orderData.created_at).toLocaleDateString()}
+                          Placed on {new Date(trackingData.created_at).toLocaleDateString()}
                         </CardDescription>
                       </div>
-                      <Badge className={getStatusColor(orderData.delivery_status)}>
-                        {orderData.delivery_status.replace(/_/g, " ").toUpperCase()}
+                      <Badge className={getStatusColor(trackingData.delivery_status)}>
+                        {trackingData.delivery_status.replace(/_/g, " ").toUpperCase()}
                       </Badge>
                     </div>
                   </CardHeader>
@@ -159,23 +179,18 @@ const OrderTracking = () => {
                       <div className="flex items-start gap-2">
                         <MapPin className="h-5 w-5 text-muted-foreground mt-1" />
                         <div>
-                          <p className="font-medium">Shipping Address</p>
-                          <p className="text-sm text-muted-foreground">
-                            {orderData.shipping_address.fullName}<br />
-                            {orderData.shipping_address.address}<br />
-                            {orderData.shipping_address.city}, {orderData.shipping_address.state} {orderData.shipping_address.pincode}<br />
-                            Phone: {orderData.shipping_address.phone}
-                          </p>
+                          <p className="font-medium">Delivery City</p>
+                          <p className="text-sm text-muted-foreground">{trackingData.city}</p>
                         </div>
                       </div>
 
-                      {orderData.estimated_delivery_date && (
+                      {trackingData.estimated_delivery_date && (
                         <div className="flex items-center gap-2 p-3 bg-muted rounded-lg">
                           <Clock className="h-5 w-5 text-primary" />
                           <div>
                             <p className="font-medium">Estimated Delivery</p>
                             <p className="text-sm text-muted-foreground">
-                              {new Date(orderData.estimated_delivery_date).toLocaleDateString("en-IN", {
+                              {new Date(trackingData.estimated_delivery_date).toLocaleDateString("en-IN", {
                                 weekday: "long",
                                 year: "numeric",
                                 month: "long",
@@ -186,10 +201,10 @@ const OrderTracking = () => {
                         </div>
                       )}
 
-                      {orderData.tracking_notes && (
+                      {trackingData.tracking_notes && (
                         <div className="p-3 bg-blue-50 dark:bg-blue-950 rounded-lg">
                           <p className="text-sm font-medium mb-1">Latest Update</p>
-                          <p className="text-sm text-muted-foreground">{orderData.tracking_notes}</p>
+                          <p className="text-sm text-muted-foreground">{trackingData.tracking_notes}</p>
                         </div>
                       )}
                     </div>
@@ -203,7 +218,7 @@ const OrderTracking = () => {
                   <CardContent>
                     <div className="relative">
                       {statusSteps.map((step, index) => {
-                        const currentIndex = getCurrentStepIndex(orderData.delivery_status);
+                        const currentIndex = getCurrentStepIndex(trackingData.delivery_status);
                         const isCompleted = index <= currentIndex;
                         const isCurrent = index === currentIndex;
 
@@ -238,35 +253,37 @@ const OrderTracking = () => {
                   </CardContent>
                 </Card>
 
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Order Items</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      {orderData.order_items.map((item: any) => (
-                        <div key={item.id} className="flex items-center gap-4">
-                          <img
-                            src={item.product_image}
-                            alt={item.product_name}
-                            className="w-16 h-16 object-cover rounded"
-                          />
-                          <div className="flex-1">
-                            <p className="font-medium">{item.product_name}</p>
-                            <p className="text-sm text-muted-foreground">Quantity: {item.quantity}</p>
+                {orderItems.length > 0 && (
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Order Items</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        {orderItems.map((item, index) => (
+                          <div key={index} className="flex items-center gap-4">
+                            <img
+                              src={item.product_image}
+                              alt={item.product_name}
+                              className="w-16 h-16 object-cover rounded"
+                            />
+                            <div className="flex-1">
+                              <p className="font-medium">{item.product_name}</p>
+                              <p className="text-sm text-muted-foreground">Quantity: {item.quantity}</p>
+                            </div>
+                            <p className="font-medium">₹{item.price}</p>
                           </div>
-                          <p className="font-medium">₹{item.price}</p>
-                        </div>
-                      ))}
-                      <div className="pt-4 border-t">
-                        <div className="flex justify-between items-center">
-                          <p className="text-lg font-bold">Total Amount</p>
-                          <p className="text-lg font-bold">₹{orderData.total_amount}</p>
+                        ))}
+                        <div className="pt-4 border-t">
+                          <div className="flex justify-between items-center">
+                            <p className="text-lg font-bold">Total Amount</p>
+                            <p className="text-lg font-bold">₹{trackingData.total_amount}</p>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                    </CardContent>
+                  </Card>
+                )}
               </div>
             )}
           </div>

@@ -1,1 +1,7 @@
 project_id = "ocfqlnadvzciyzetoypi"
+
+[functions.whatsapp-assistant]
+verify_jwt = false
+
+[functions.ai-content-suggestions]
+verify_jwt = true

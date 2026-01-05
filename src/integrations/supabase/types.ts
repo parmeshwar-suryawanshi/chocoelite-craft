@@ -61,6 +61,189 @@ export type Database = {
           },
         ]
       }
+      combo_offers: {
+        Row: {
+          created_at: string
+          description: string
+          discounted_price: number
+          display_order: number | null
+          id: string
+          image_url: string | null
+          is_active: boolean | null
+          original_price: number
+          product_ids: Json | null
+          title: string
+          updated_at: string
+          valid_from: string | null
+          valid_until: string | null
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          discounted_price: number
+          display_order?: number | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          original_price: number
+          product_ids?: Json | null
+          title: string
+          updated_at?: string
+          valid_from?: string | null
+          valid_until?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          discounted_price?: number
+          display_order?: number | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          original_price?: number
+          product_ids?: Json | null
+          title?: string
+          updated_at?: string
+          valid_from?: string | null
+          valid_until?: string | null
+        }
+        Relationships: []
+      }
+      festival_offers: {
+        Row: {
+          banner_image: string | null
+          code: string | null
+          created_at: string
+          description: string
+          discount_type: string | null
+          discount_value: number | null
+          festival_name: string
+          id: string
+          is_active: boolean | null
+          terms_conditions: string | null
+          title: string
+          updated_at: string
+          valid_from: string | null
+          valid_until: string | null
+        }
+        Insert: {
+          banner_image?: string | null
+          code?: string | null
+          created_at?: string
+          description: string
+          discount_type?: string | null
+          discount_value?: number | null
+          festival_name: string
+          id?: string
+          is_active?: boolean | null
+          terms_conditions?: string | null
+          title: string
+          updated_at?: string
+          valid_from?: string | null
+          valid_until?: string | null
+        }
+        Update: {
+          banner_image?: string | null
+          code?: string | null
+          created_at?: string
+          description?: string
+          discount_type?: string | null
+          discount_value?: number | null
+          festival_name?: string
+          id?: string
+          is_active?: boolean | null
+          terms_conditions?: string | null
+          title?: string
+          updated_at?: string
+          valid_from?: string | null
+          valid_until?: string | null
+        }
+        Relationships: []
+      }
+      gallery_images: {
+        Row: {
+          alt_text: string
+          created_at: string
+          display_order: number | null
+          id: string
+          image_url: string
+          is_active: boolean | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          alt_text: string
+          created_at?: string
+          display_order?: number | null
+          id?: string
+          image_url: string
+          is_active?: boolean | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          alt_text?: string
+          created_at?: string
+          display_order?: number | null
+          id?: string
+          image_url?: string
+          is_active?: boolean | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      lucky_winners: {
+        Row: {
+          campaign_name: string
+          created_at: string
+          draw_date: string
+          id: string
+          is_active: boolean | null
+          is_featured: boolean | null
+          prize_description: string
+          prize_image: string | null
+          testimonial: string | null
+          updated_at: string
+          winner_email: string | null
+          winner_image: string | null
+          winner_name: string
+          winner_phone: string | null
+        }
+        Insert: {
+          campaign_name: string
+          created_at?: string
+          draw_date: string
+          id?: string
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          prize_description: string
+          prize_image?: string | null
+          testimonial?: string | null
+          updated_at?: string
+          winner_email?: string | null
+          winner_image?: string | null
+          winner_name: string
+          winner_phone?: string | null
+        }
+        Update: {
+          campaign_name?: string
+          created_at?: string
+          draw_date?: string
+          id?: string
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          prize_description?: string
+          prize_image?: string | null
+          testimonial?: string | null
+          updated_at?: string
+          winner_email?: string | null
+          winner_image?: string | null
+          winner_name?: string
+          winner_phone?: string | null
+        }
+        Relationships: []
+      }
       offers: {
         Row: {
           code: string | null
@@ -352,6 +535,30 @@ export type Database = {
           },
         ]
       }
+      site_settings: {
+        Row: {
+          id: string
+          setting_key: string
+          setting_type: string | null
+          setting_value: Json
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          setting_key: string
+          setting_type?: string | null
+          setting_value: Json
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          setting_key?: string
+          setting_type?: string | null
+          setting_value?: Json
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string | null
@@ -370,6 +577,51 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      videos: {
+        Row: {
+          created_at: string
+          description: string | null
+          display_order: number | null
+          duration: string | null
+          id: string
+          is_active: boolean | null
+          is_featured: boolean | null
+          thumbnail_url: string
+          title: string
+          updated_at: string
+          video_type: string | null
+          video_url: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          display_order?: number | null
+          duration?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          thumbnail_url: string
+          title: string
+          updated_at?: string
+          video_type?: string | null
+          video_url: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          display_order?: number | null
+          duration?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          thumbnail_url?: string
+          title?: string
+          updated_at?: string
+          video_type?: string | null
+          video_url?: string
         }
         Relationships: []
       }

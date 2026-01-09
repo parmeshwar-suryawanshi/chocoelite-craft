@@ -1,30 +1,57 @@
+import { useEffect, useState } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { Skeleton } from '@/components/ui/skeleton';
+
+interface GalleryImage {
+  id: string;
+  title: string;
+  alt_text: string;
+  image_url: string;
+  display_order: number;
+}
+
 const Gallery = () => {
-  const galleryImages = [
-    {
-      url: "https://fpimages.withfloats.com/actual/67a08943207b407e61ab2d1c.png",
-      alt: "ChocoElite premium chocolates display",
-    },
-    {
-      url: "https://fpimages.withfloats.com/actual/67a08942207b407e61ab2d1a.png",
-      alt: "Artisan chocolate making process",
-    },
-    {
-      url: "https://fpimages.withfloats.com/actual/67a08941207b407e61ab2d18.png",
-      alt: "Fresh fruit chocolate assortment",
-    },
-    {
-      url: "https://fpimages.withfloats.com/actual/67a08944207b407e61ab2d21.png",
-      alt: "Luxurious chocolate packaging",
-    },
-    {
-      url: "https://fpimages.withfloats.com/actual/67a08944207b407e61ab2d1f.png",
-      alt: "Handcrafted chocolate creations",
-    },
-    {
-      url: "https://fpimages.withfloats.com/actual/67a08943207b407e61ab2d1d.png",
-      alt: "Premium chocolate gift boxes",
-    },
-  ];
+  const [galleryImages, setGalleryImages] = useState<GalleryImage[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchGalleryImages();
+  }, []);
+
+  const fetchGalleryImages = async () => {
+    const { data, error } = await supabase
+      .from('gallery_images')
+      .select('*')
+      .eq('is_active', true)
+      .order('display_order', { ascending: true });
+
+    if (data && !error) {
+      setGalleryImages(data);
+    }
+    setLoading(false);
+  };
+
+  if (loading) {
+    return (
+      <section id="gallery" className="py-20 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <Skeleton className="h-12 w-48 mx-auto mb-4" />
+            <Skeleton className="h-6 w-96 mx-auto" />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <Skeleton key={i} className="aspect-[4/3] rounded-2xl" />
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (galleryImages.length === 0) {
+    return null;
+  }
 
   return (
     <section id="gallery" className="py-20 bg-muted/30">
@@ -41,19 +68,23 @@ const Gallery = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {galleryImages.map((image, index) => (
             <div
-              key={index}
+              key={image.id}
               className="group relative overflow-hidden rounded-2xl shadow-2xl hover-lift bg-muted/20"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
               <div className="aspect-[4/3] flex items-center justify-center p-4">
                 <img
-                  src={image.url}
-                  alt={image.alt}
+                  src={image.image_url}
+                  alt={image.alt_text}
                   className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
                   loading="lazy"
                 />
               </div>
-              <div className="absolute inset-0 bg-gradient-to-t from-purple-900/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-t from-purple-900/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                <div className="absolute bottom-4 left-4 right-4">
+                  <h3 className="text-white font-semibold text-lg">{image.title}</h3>
+                </div>
+              </div>
             </div>
           ))}
         </div>

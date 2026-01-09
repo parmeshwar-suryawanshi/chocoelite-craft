@@ -7,6 +7,7 @@ import { Loader2, Package, Percent, ShoppingBag, BarChart3, MessageCircle, Image
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SalesAnalytics from '@/components/admin/SalesAnalytics';
+import DashboardStats from '@/components/admin/DashboardStats';
 import WhatsAppOrderManagement from '@/components/admin/WhatsAppOrderManagement';
 import ProductManagement from '@/components/admin/ProductManagement';
 import OfferManagement from '@/components/admin/OfferManagement';
@@ -224,6 +225,8 @@ const Admin = () => {
           <h1 className="text-4xl font-display font-bold mb-2">Admin Dashboard</h1>
           <p className="text-muted-foreground">Complete content management system with AI assistance</p>
         </div>
+
+        <DashboardStats />
 
         <Tabs defaultValue="analytics" className="w-full">
           <TabsList className="flex flex-wrap gap-1 h-auto mb-8">

@@ -14,6 +14,7 @@ import LimitedEdition from "@/components/LimitedEdition";
 import CraftVideo from "@/components/CraftVideo";
 import SpecialOffers from "@/components/SpecialOffers";
 import WhatsAppBot from "@/components/WhatsAppBot";
+import LuckyWinners from "@/components/LuckyWinners";
 
 const Index = () => {
   return (
@@ -30,6 +31,7 @@ const Index = () => {
           <About />
           <GiftSection />
           <Gallery />
+          <LuckyWinners />
           <Testimonials />
           <LoyaltySection />
           <Newsletter />

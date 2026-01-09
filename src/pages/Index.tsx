@@ -22,28 +22,26 @@ const Index = () => {
   return (
     <>
       <SEO />
-      <div className="min-h-screen">
-        <Navbar />
-        <main>
-          <Hero />
-          <SpecialOffers />
-          <Products />
-          <ComboOffers />
-          <FestivalOffers />
-          <LimitedEdition />
-          <CraftVideo />
-          <About />
-          <GiftSection />
-          <Gallery />
-          <LuckyWinners />
-          <Testimonials />
-          <LoyaltySection />
-          <Newsletter />
-          <Contact />
-        </main>
-        <Footer />
-        <WhatsAppBot />
-      </div>
+      <Navbar />
+      <main className="min-h-screen">
+        <Hero />
+        <SpecialOffers />
+        <Products />
+        <ComboOffers />
+        <FestivalOffers />
+        <LimitedEdition />
+        <CraftVideo />
+        <About />
+        <GiftSection />
+        <Gallery />
+        <LuckyWinners />
+        <Testimonials />
+        <LoyaltySection />
+        <Newsletter />
+        <Contact />
+      </main>
+      <Footer />
+      <WhatsAppBot />
     </>
   );
 };

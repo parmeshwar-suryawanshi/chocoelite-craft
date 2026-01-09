@@ -15,6 +15,8 @@ import CraftVideo from "@/components/CraftVideo";
 import SpecialOffers from "@/components/SpecialOffers";
 import WhatsAppBot from "@/components/WhatsAppBot";
 import LuckyWinners from "@/components/LuckyWinners";
+import ComboOffers from "@/components/ComboOffers";
+import FestivalOffers from "@/components/FestivalOffers";
 
 const Index = () => {
   return (
@@ -26,6 +28,8 @@ const Index = () => {
           <Hero />
           <SpecialOffers />
           <Products />
+          <ComboOffers />
+          <FestivalOffers />
           <LimitedEdition />
           <CraftVideo />
           <About />

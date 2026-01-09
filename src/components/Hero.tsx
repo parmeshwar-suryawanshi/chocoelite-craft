@@ -1,193 +1,158 @@
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, ShoppingBag } from "lucide-react";
-import { useEffect, useState, useCallback } from "react";
+import { ChevronDown, Sparkles } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import heroBanner1 from "@/assets/hero-banner-1.png";
-import heroBanner2 from "@/assets/hero-banner-2.png";
-import heroBanner3 from "@/assets/hero-banner-3.png";
-
-const slides = [
-  {
-    id: 1,
-    image: heroBanner1,
-    title: "Premium Fruit Chocolates",
-    subtitle: "Experience the perfect blend of rich cocoa and fresh fruits",
-    cta: "Shop Now",
-    link: "/shop"
-  },
-  {
-    id: 2,
-    image: heroBanner2,
-    title: "Handcrafted with Love",
-    subtitle: "Every bite tells a story of craftsmanship and quality",
-    cta: "Explore Collection",
-    link: "/shop"
-  },
-  {
-    id: 3,
-    image: heroBanner3,
-    title: "Gift the Extraordinary",
-    subtitle: "Luxury gift boxes for your special moments",
-    cta: "View Gifts",
-    link: "/shop?category=gifts"
-  }
-];
 
 const Hero = () => {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
-
-  const nextSlide = useCallback(() => {
-    setCurrentSlide((prev) => (prev + 1) % slides.length);
-  }, []);
-
-  const prevSlide = useCallback(() => {
-    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
-  }, []);
-
-  const goToSlide = (index: number) => {
-    setCurrentSlide(index);
-    setIsAutoPlaying(false);
-    setTimeout(() => setIsAutoPlaying(true), 5000);
-  };
+  const [particles, setParticles] = useState<Array<{ id: number; x: number; y: number; delay: number }>>([]);
 
   useEffect(() => {
-    if (!isAutoPlaying) return;
-    
-    const interval = setInterval(nextSlide, 4000);
-    return () => clearInterval(interval);
-  }, [isAutoPlaying, nextSlide]);
+    const newParticles = Array.from({ length: 15 }, (_, i) => ({
+      id: i,
+      x: Math.random() * 100,
+      y: Math.random() * 100,
+      delay: Math.random() * 5,
+    }));
+    setParticles(newParticles);
+  }, []);
+
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   return (
-    <section id="hero" className="relative w-full overflow-hidden bg-luxury-cream">
-      {/* Slider Container */}
-      <div className="relative h-[50vh] sm:h-[60vh] md:h-[70vh] lg:h-[80vh]">
-        {/* Slides */}
-        {slides.map((slide, index) => (
+    <section
+      id="hero"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden gradient-hero"
+    >
+      {/* Subtle Grid Pattern */}
+      <div className="absolute inset-0 opacity-5">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
+          backgroundSize: '60px 60px',
+        }} />
+      </div>
+
+      {/* Golden Particle Effects */}
+      <div className="absolute inset-0 pointer-events-none">
+        {particles.map((particle) => (
           <div
-            key={slide.id}
-            className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
-              index === currentSlide ? "opacity-100 z-10" : "opacity-0 z-0"
-            }`}
-          >
-            {/* Background Image */}
-            <img
-              src={slide.image}
-              alt={slide.title}
-              className="w-full h-full object-cover object-center"
-            />
-            
-            {/* Gradient Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-transparent" />
-            
-            {/* Content */}
-            <div className="absolute inset-0 flex items-center">
-              <div className="container mx-auto px-4 md:px-8">
-                <div className="max-w-xl">
-                  <h1 
-                    className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-bold text-white mb-4 transition-all duration-700 delay-100 ${
-                      index === currentSlide ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
-                    }`}
-                  >
-                    {slide.title}
-                  </h1>
-                  <p 
-                    className={`text-base sm:text-lg md:text-xl text-white/90 mb-6 md:mb-8 transition-all duration-700 delay-200 ${
-                      index === currentSlide ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
-                    }`}
-                  >
-                    {slide.subtitle}
-                  </p>
-                  <Button
-                    asChild
-                    size="lg"
-                    className={`bg-amber-500 hover:bg-amber-600 text-white font-semibold px-6 md:px-8 py-5 md:py-6 text-base md:text-lg shadow-lg hover:shadow-xl transition-all duration-700 delay-300 ${
-                      index === currentSlide ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
-                    }`}
-                  >
-                    <Link to={slide.link}>
-                      <ShoppingBag className="mr-2 h-5 w-5" />
-                      {slide.cta}
-                    </Link>
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </div>
+            key={particle.id}
+            className="absolute w-1 h-1 bg-luxury-gold rounded-full animate-particle opacity-60"
+            style={{
+              left: `${particle.x}%`,
+              top: `${particle.y}%`,
+              animationDelay: `${particle.delay}s`,
+            }}
+          />
         ))}
-
-        {/* Navigation Arrows */}
-        <button
-          onClick={() => {
-            prevSlide();
-            setIsAutoPlaying(false);
-            setTimeout(() => setIsAutoPlaying(true), 5000);
-          }}
-          className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-20 p-2 md:p-3 bg-white/20 hover:bg-white/40 backdrop-blur-sm rounded-full text-white transition-all duration-300 hover:scale-110"
-          aria-label="Previous slide"
-        >
-          <ChevronLeft className="h-5 w-5 md:h-6 md:w-6" />
-        </button>
-        <button
-          onClick={() => {
-            nextSlide();
-            setIsAutoPlaying(false);
-            setTimeout(() => setIsAutoPlaying(true), 5000);
-          }}
-          className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-20 p-2 md:p-3 bg-white/20 hover:bg-white/40 backdrop-blur-sm rounded-full text-white transition-all duration-300 hover:scale-110"
-          aria-label="Next slide"
-        >
-          <ChevronRight className="h-5 w-5 md:h-6 md:w-6" />
-        </button>
-
-        {/* Dots Indicator */}
-        <div className="absolute bottom-4 md:bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 md:gap-3">
-          {slides.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => goToSlide(index)}
-              className={`transition-all duration-300 rounded-full ${
-                index === currentSlide 
-                  ? "w-6 md:w-8 h-2 md:h-3 bg-amber-500" 
-                  : "w-2 md:w-3 h-2 md:h-3 bg-white/50 hover:bg-white/80"
-              }`}
-              aria-label={`Go to slide ${index + 1}`}
-            />
-          ))}
-        </div>
       </div>
 
-      {/* Features Bar */}
-      <div className="bg-luxury-brown text-white py-3 md:py-4">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-wrap items-center justify-center gap-4 md:gap-8 lg:gap-16 text-center text-xs sm:text-sm">
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-amber-500 flex items-center justify-center">
-                <span className="text-xs md:text-sm">✓</span>
-              </div>
-              <span>100% Natural Ingredients</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-amber-500 flex items-center justify-center">
-                <span className="text-xs md:text-sm">🍫</span>
-              </div>
-              <span>Handcrafted Chocolates</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-amber-500 flex items-center justify-center">
-                <span className="text-xs md:text-sm">🚚</span>
-              </div>
-              <span>Free Delivery Above ₹500</span>
-            </div>
-            <div className="flex items-center gap-2 hidden sm:flex">
-              <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-amber-500 flex items-center justify-center">
-                <span className="text-xs md:text-sm">🎁</span>
-              </div>
-              <span>Premium Gift Packaging</span>
-            </div>
+      {/* Warm Glowing Orbs */}
+      <div className="absolute inset-0 opacity-20">
+        <div className="absolute top-20 left-10 w-64 h-64 rounded-full bg-gradient-to-r from-amber-400/30 to-transparent blur-3xl animate-pulse-slow" />
+        <div className="absolute bottom-20 right-10 w-80 h-80 rounded-full bg-gradient-to-l from-amber-500/25 to-transparent blur-3xl animate-pulse-slow" style={{ animationDelay: "1s" }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-amber-300/15 blur-3xl animate-pulse-slow" style={{ animationDelay: "2s" }} />
+      </div>
+
+      {/* Floating Chocolate Images */}
+      <div className="absolute inset-0 opacity-40 pointer-events-none overflow-hidden">
+        <img 
+          src="https://images.unsplash.com/photo-1511381939415-e44015466834?w=200&h=200&fit=crop" 
+          alt="" 
+          className="absolute top-20 left-[5%] w-24 h-24 md:w-32 md:h-32 rounded-full object-cover animate-float-slow blur-[1px] shadow-2xl"
+        />
+        <img 
+          src="https://images.unsplash.com/photo-1606312619070-d48b4772d8f0?w=300&h=200&fit=crop" 
+          alt="" 
+          className="absolute top-32 right-[8%] w-32 h-20 md:w-40 md:h-24 rounded-lg object-cover animate-float-slow blur-[1px] shadow-2xl" 
+          style={{ animationDelay: "1s" }}
+        />
+        <img 
+          src="https://images.unsplash.com/photo-1548907040-4baa42d10919?w=200&h=200&fit=crop" 
+          alt="" 
+          className="absolute top-1/2 left-[10%] w-20 h-20 md:w-28 md:h-28 rounded-full object-cover animate-float-slow blur-[1px] shadow-2xl" 
+          style={{ animationDelay: "2s" }}
+        />
+        <img 
+          src="https://images.unsplash.com/photo-1575550959106-5a7defe28b56?w=250&h=250&fit=crop" 
+          alt="" 
+          className="absolute bottom-32 right-[5%] w-28 h-28 md:w-36 md:h-36 rounded-lg object-cover animate-float-slow blur-[1px] shadow-2xl" 
+          style={{ animationDelay: "0.5s" }}
+        />
+        <img 
+          src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=200&h=200&fit=crop" 
+          alt="" 
+          className="absolute bottom-20 left-[12%] w-20 h-20 md:w-24 md:h-24 rounded-full object-cover animate-float-slow blur-[1px] shadow-2xl" 
+          style={{ animationDelay: "2.5s" }}
+        />
+      </div>
+
+      <div className="container mx-auto px-4 py-32 relative z-10">
+        <div className="max-w-4xl mx-auto text-center">
+          {/* Badge */}
+          <div className="inline-flex items-center gap-2 mb-6 px-6 py-3 rounded-full bg-amber-500/20 backdrop-blur-md border border-amber-400/30 shadow-2xl animate-fade-in-up">
+            <Sparkles className="h-4 w-4 text-amber-300 animate-pulse" />
+            <p className="text-amber-100 text-sm font-semibold tracking-wide">Fruit at Every Bite</p>
+            <Sparkles className="h-4 w-4 text-amber-300 animate-pulse" style={{ animationDelay: "0.5s" }} />
+          </div>
+          
+          {/* Main Heading */}
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-display font-bold text-white mb-8 leading-tight">
+            <span className="inline-block animate-slide-in-left">ChocoElite</span>
+            <br />
+            <span className="inline-block text-amber-100/95 animate-slide-in-right" style={{ animationDelay: "0.2s" }}>
+              Guilt-Free Indulgence,
+            </span>
+            <br />
+            <span className="inline-block bg-gradient-to-r from-amber-300 via-amber-200 to-amber-300 bg-clip-text text-transparent animate-slide-in-left" style={{ animationDelay: "0.4s" }}>
+              Pure Fruit Pleasure!
+            </span>
+          </h1>
+
+          {/* Description */}
+          <p className="text-lg md:text-xl text-amber-100/85 mb-10 max-w-2xl mx-auto leading-relaxed animate-fade-in-up" style={{ animationDelay: "0.6s" }}>
+            Experience chocolate reimagined with real fruits—a luxurious fusion of cocoa
+            and nature that delights your senses and nourishes your body.
+          </p>
+
+          {/* CTA Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-fade-in-up" style={{ animationDelay: "0.8s" }}>
+            <Button
+              asChild
+              size="lg"
+              className="group relative bg-amber-500 text-amber-950 hover:bg-amber-400 font-semibold px-10 py-7 text-lg shadow-2xl hover:shadow-amber-500/30 transition-all duration-300 hover:scale-105"
+            >
+              <Link to="/shop">
+                <span className="relative z-10">Shop Now</span>
+              </Link>
+            </Button>
+            <Button
+              onClick={() => scrollToSection("contact")}
+              size="lg"
+              variant="outline"
+              className="group relative border-2 border-amber-400/50 text-amber-100 hover:bg-amber-500 hover:text-amber-950 hover:border-amber-500 font-semibold px-10 py-7 text-lg backdrop-blur-md bg-amber-500/10 shadow-xl transition-all duration-300 hover:scale-105"
+            >
+              <span className="relative z-10">Get in Touch</span>
+            </Button>
           </div>
         </div>
       </div>
+
+      {/* Scroll Indicator */}
+      <button
+        onClick={() => scrollToSection("products")}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 text-amber-300 animate-bounce-slow cursor-pointer group"
+        aria-label="Scroll to content"
+      >
+        <div className="relative">
+          <ChevronDown className="h-8 w-8 group-hover:scale-110 transition-transform duration-300" />
+          <div className="absolute inset-0 h-8 w-8 bg-amber-400/20 rounded-full blur-md animate-pulse" />
+        </div>
+      </button>
     </section>
   );
 };

@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      about_content: {
+        Row: {
+          content_type: string
+          created_at: string
+          description: string
+          display_order: number
+          icon: string | null
+          id: string
+          is_active: boolean
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          content_type: string
+          created_at?: string
+          description: string
+          display_order?: number
+          icon?: string | null
+          id?: string
+          is_active?: boolean
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          content_type?: string
+          created_at?: string
+          description?: string
+          display_order?: number
+          icon?: string | null
+          id?: string
+          is_active?: boolean
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       cart_items: {
         Row: {
           created_at: string | null
@@ -268,6 +304,153 @@ export type Database = {
         }
         Relationships: []
       }
+      limited_time_offers: {
+        Row: {
+          badge_text: string | null
+          banner_image: string | null
+          category_filter: string | null
+          code: string | null
+          created_at: string
+          description: string
+          discount_type: string
+          discount_value: number | null
+          display_order: number
+          end_date: string
+          id: string
+          is_active: boolean
+          is_featured: boolean
+          min_order_amount: number | null
+          offer_type: string
+          product_ids: Json | null
+          start_date: string
+          terms_conditions: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          badge_text?: string | null
+          banner_image?: string | null
+          category_filter?: string | null
+          code?: string | null
+          created_at?: string
+          description: string
+          discount_type: string
+          discount_value?: number | null
+          display_order?: number
+          end_date: string
+          id?: string
+          is_active?: boolean
+          is_featured?: boolean
+          min_order_amount?: number | null
+          offer_type: string
+          product_ids?: Json | null
+          start_date: string
+          terms_conditions?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          badge_text?: string | null
+          banner_image?: string | null
+          category_filter?: string | null
+          code?: string | null
+          created_at?: string
+          description?: string
+          discount_type?: string
+          discount_value?: number | null
+          display_order?: number
+          end_date?: string
+          id?: string
+          is_active?: boolean
+          is_featured?: boolean
+          min_order_amount?: number | null
+          offer_type?: string
+          product_ids?: Json | null
+          start_date?: string
+          terms_conditions?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      loyalty_earn_rules: {
+        Row: {
+          created_at: string
+          description: string
+          display_order: number
+          id: string
+          is_active: boolean
+          points_value: number
+          rule_type: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          points_value: number
+          rule_type: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          points_value?: number
+          rule_type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      loyalty_tiers: {
+        Row: {
+          benefits: Json
+          color_from: string
+          color_to: string
+          created_at: string
+          display_order: number
+          icon: string
+          id: string
+          is_active: boolean
+          name: string
+          points_max: number | null
+          points_min: number
+          updated_at: string
+        }
+        Insert: {
+          benefits?: Json
+          color_from: string
+          color_to: string
+          created_at?: string
+          display_order?: number
+          icon: string
+          id?: string
+          is_active?: boolean
+          name: string
+          points_max?: number | null
+          points_min: number
+          updated_at?: string
+        }
+        Update: {
+          benefits?: Json
+          color_from?: string
+          color_to?: string
+          created_at?: string
+          display_order?: number
+          icon?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          points_max?: number | null
+          points_min?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       lucky_winners: {
         Row: {
           campaign_name: string
@@ -318,6 +501,47 @@ export type Database = {
           winner_phone?: string | null
         }
         Relationships: []
+      }
+      offer_analytics: {
+        Row: {
+          clicks: number
+          conversions: number
+          created_at: string
+          date: string
+          id: string
+          offer_id: string
+          revenue_generated: number
+          views: number
+        }
+        Insert: {
+          clicks?: number
+          conversions?: number
+          created_at?: string
+          date?: string
+          id?: string
+          offer_id: string
+          revenue_generated?: number
+          views?: number
+        }
+        Update: {
+          clicks?: number
+          conversions?: number
+          created_at?: string
+          date?: string
+          id?: string
+          offer_id?: string
+          revenue_generated?: number
+          views?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "offer_analytics_offer_id_fkey"
+            columns: ["offer_id"]
+            isOneToOne: false
+            referencedRelation: "limited_time_offers"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       offers: {
         Row: {
@@ -701,6 +925,45 @@ export type Database = {
           setting_key?: string
           setting_type?: string | null
           setting_value?: Json
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      testimonials: {
+        Row: {
+          created_at: string
+          display_order: number
+          id: string
+          image_url: string | null
+          is_active: boolean
+          location: string
+          name: string
+          rating: number
+          text: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          display_order?: number
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          location: string
+          name: string
+          rating?: number
+          text: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          display_order?: number
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          location?: string
+          name?: string
+          rating?: number
+          text?: string
           updated_at?: string
         }
         Relationships: []

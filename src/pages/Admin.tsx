@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Package, Percent, ShoppingBag, BarChart3, MessageCircle, Image, Video, Gift, PartyPopper, Trophy } from 'lucide-react';
+import { Loader2, Package, Percent, ShoppingBag, BarChart3, MessageCircle, Image, Video, Gift, PartyPopper, Trophy, LayoutGrid, Sparkles } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SalesAnalytics from '@/components/admin/SalesAnalytics';
@@ -17,6 +17,8 @@ import VideoManagement from '@/components/admin/VideoManagement';
 import ComboOfferManagement from '@/components/admin/ComboOfferManagement';
 import FestivalOfferManagement from '@/components/admin/FestivalOfferManagement';
 import LuckyWinnerManagement from '@/components/admin/LuckyWinnerManagement';
+import SectionManagement from '@/components/admin/SectionManagement';
+import HeroManagement from '@/components/admin/HeroManagement';
 
 interface Product {
   id: string;
@@ -120,6 +122,39 @@ interface LuckyWinner {
   is_active: boolean;
 }
 
+interface SiteSection {
+  id: string;
+  section_key: string;
+  section_name: string;
+  is_visible: boolean;
+  display_order: number;
+  description: string | null;
+}
+
+interface HeroContent {
+  id: string;
+  title_line1: string;
+  title_line2: string;
+  subtitle: string;
+  badge_text: string | null;
+  primary_button_text: string | null;
+  primary_button_link: string | null;
+  secondary_button_text: string | null;
+  secondary_button_link: string | null;
+  image_url: string | null;
+  video_url: string | null;
+  background_type: string;
+  background_value: string | null;
+  trust_indicators: unknown;
+  floating_card_1_title: string | null;
+  floating_card_1_subtitle: string | null;
+  floating_card_2_title: string | null;
+  floating_card_2_subtitle: string | null;
+  is_active: boolean;
+  display_order: number;
+  created_at: string;
+}
+
 const Admin = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -133,6 +168,8 @@ const Admin = () => {
   const [comboOffers, setComboOffers] = useState<ComboOffer[]>([]);
   const [festivalOffers, setFestivalOffers] = useState<FestivalOffer[]>([]);
   const [luckyWinners, setLuckyWinners] = useState<LuckyWinner[]>([]);
+  const [siteSections, setSiteSections] = useState<SiteSection[]>([]);
+  const [heroContents, setHeroContents] = useState<HeroContent[]>([]);
 
   useEffect(() => {
     checkAdminAccess();
@@ -183,7 +220,9 @@ const Admin = () => {
       videosRes, 
       comboRes, 
       festivalRes, 
-      winnersRes
+      winnersRes,
+      sectionsRes,
+      heroRes
     ] = await Promise.all([
       supabase.from('products').select('*').order('created_at', { ascending: false }),
       supabase.from('offers').select('*').order('created_at', { ascending: false }),
@@ -193,6 +232,8 @@ const Admin = () => {
       supabase.from('combo_offers').select('*').order('display_order', { ascending: true }),
       supabase.from('festival_offers').select('*').order('created_at', { ascending: false }),
       supabase.from('lucky_winners').select('*').order('draw_date', { ascending: false }),
+      supabase.from('site_sections').select('*').order('display_order', { ascending: true }),
+      supabase.from('hero_content').select('*').order('display_order', { ascending: true }),
     ]);
 
     if (productsRes.data) setProducts(productsRes.data);
@@ -203,6 +244,8 @@ const Admin = () => {
     if (comboRes.data) setComboOffers(comboRes.data);
     if (festivalRes.data) setFestivalOffers(festivalRes.data);
     if (winnersRes.data) setLuckyWinners(winnersRes.data);
+    if (sectionsRes.data) setSiteSections(sectionsRes.data);
+    if (heroRes.data) setHeroContents(heroRes.data);
   };
 
   if (loading) {
@@ -228,8 +271,16 @@ const Admin = () => {
 
         <DashboardStats />
 
-        <Tabs defaultValue="analytics" className="w-full">
+        <Tabs defaultValue="sections" className="w-full">
           <TabsList className="flex flex-wrap gap-1 h-auto mb-8">
+            <TabsTrigger value="sections" className="gap-2">
+              <LayoutGrid className="h-4 w-4" />
+              <span className="hidden sm:inline">Sections</span>
+            </TabsTrigger>
+            <TabsTrigger value="hero" className="gap-2">
+              <Sparkles className="h-4 w-4" />
+              <span className="hidden sm:inline">Hero</span>
+            </TabsTrigger>
             <TabsTrigger value="analytics" className="gap-2">
               <BarChart3 className="h-4 w-4" />
               <span className="hidden sm:inline">Analytics</span>
@@ -271,6 +322,16 @@ const Admin = () => {
               <span className="hidden sm:inline">WhatsApp</span>
             </TabsTrigger>
           </TabsList>
+
+          {/* Sections Tab */}
+          <TabsContent value="sections">
+            <SectionManagement sections={siteSections} onRefresh={fetchData} />
+          </TabsContent>
+
+          {/* Hero Tab */}
+          <TabsContent value="hero">
+            <HeroManagement heroContents={heroContents} onRefresh={fetchData} />
+          </TabsContent>
 
           {/* Analytics Tab */}
           <TabsContent value="analytics">

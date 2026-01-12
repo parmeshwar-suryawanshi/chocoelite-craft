@@ -193,6 +193,81 @@ export type Database = {
         }
         Relationships: []
       }
+      hero_content: {
+        Row: {
+          background_type: string
+          background_value: string | null
+          badge_text: string | null
+          created_at: string
+          display_order: number
+          floating_card_1_subtitle: string | null
+          floating_card_1_title: string | null
+          floating_card_2_subtitle: string | null
+          floating_card_2_title: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean
+          primary_button_link: string | null
+          primary_button_text: string | null
+          secondary_button_link: string | null
+          secondary_button_text: string | null
+          subtitle: string
+          title_line1: string
+          title_line2: string
+          trust_indicators: Json | null
+          updated_at: string
+          video_url: string | null
+        }
+        Insert: {
+          background_type?: string
+          background_value?: string | null
+          badge_text?: string | null
+          created_at?: string
+          display_order?: number
+          floating_card_1_subtitle?: string | null
+          floating_card_1_title?: string | null
+          floating_card_2_subtitle?: string | null
+          floating_card_2_title?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          primary_button_link?: string | null
+          primary_button_text?: string | null
+          secondary_button_link?: string | null
+          secondary_button_text?: string | null
+          subtitle?: string
+          title_line1?: string
+          title_line2?: string
+          trust_indicators?: Json | null
+          updated_at?: string
+          video_url?: string | null
+        }
+        Update: {
+          background_type?: string
+          background_value?: string | null
+          badge_text?: string | null
+          created_at?: string
+          display_order?: number
+          floating_card_1_subtitle?: string | null
+          floating_card_1_title?: string | null
+          floating_card_2_subtitle?: string | null
+          floating_card_2_title?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          primary_button_link?: string | null
+          primary_button_text?: string | null
+          secondary_button_link?: string | null
+          secondary_button_text?: string | null
+          subtitle?: string
+          title_line1?: string
+          title_line2?: string
+          trust_indicators?: Json | null
+          updated_at?: string
+          video_url?: string | null
+        }
+        Relationships: []
+      }
       lucky_winners: {
         Row: {
           campaign_name: string
@@ -534,6 +609,77 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      section_content: {
+        Row: {
+          content_key: string
+          content_type: string
+          content_value: string | null
+          created_at: string
+          id: string
+          section_key: string
+          updated_at: string
+        }
+        Insert: {
+          content_key: string
+          content_type?: string
+          content_value?: string | null
+          created_at?: string
+          id?: string
+          section_key: string
+          updated_at?: string
+        }
+        Update: {
+          content_key?: string
+          content_type?: string
+          content_value?: string | null
+          created_at?: string
+          id?: string
+          section_key?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "section_content_section_key_fkey"
+            columns: ["section_key"]
+            isOneToOne: false
+            referencedRelation: "site_sections"
+            referencedColumns: ["section_key"]
+          },
+        ]
+      }
+      site_sections: {
+        Row: {
+          created_at: string
+          description: string | null
+          display_order: number
+          id: string
+          is_visible: boolean
+          section_key: string
+          section_name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          id?: string
+          is_visible?: boolean
+          section_key: string
+          section_name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          id?: string
+          is_visible?: boolean
+          section_key?: string
+          section_name?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       site_settings: {
         Row: {

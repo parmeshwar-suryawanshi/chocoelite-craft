@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Menu, X, ShoppingCart, User, LogOut } from "lucide-react";
+import { Menu, X, ShoppingCart, User, LogOut, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
+import { useIsAdmin } from "@/hooks/useIsAdmin";
 import monogramLogo from "@/assets/monogram-logo.jpg";
 
 const Navbar = () => {
@@ -12,6 +13,7 @@ const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { totalItems } = useCart();
   const { user, signOut } = useAuth();
+  const { isAdmin } = useIsAdmin();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -102,6 +104,20 @@ const Navbar = () => {
             </Button>
             {user ? (
               <>
+                {isAdmin && (
+                  <Button 
+                    onClick={() => navigate("/admin")} 
+                    variant="ghost" 
+                    size="sm" 
+                    className={`backdrop-blur-sm transition-all duration-300 hover:scale-105 shadow-lg ${
+                      isScrolled 
+                        ? "bg-amber-500/20 hover:bg-amber-500/30 text-amber-700 border border-amber-500/30"
+                        : "bg-amber-500/20 hover:bg-amber-500/30 text-amber-200 border border-amber-400/30"
+                    }`}
+                  >
+                    <Settings className="h-5 w-5" />
+                  </Button>
+                )}
                 <Button 
                   onClick={() => navigate("/profile")} 
                   variant="ghost" 
@@ -201,6 +217,18 @@ const Navbar = () => {
             </Button>
             {user ? (
               <>
+                {isAdmin && (
+                  <Button
+                    onClick={() => {
+                      navigate("/admin");
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className="w-full bg-amber-600 text-white hover:bg-amber-700 font-semibold shadow-lg"
+                  >
+                    <Settings className="mr-2 h-4 w-4" />
+                    Admin Panel
+                  </Button>
+                )}
                 <Button
                   onClick={() => {
                     navigate("/profile");

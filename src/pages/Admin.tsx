@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Package, Percent, ShoppingBag, BarChart3, MessageCircle, Image, Video, Gift, PartyPopper, Trophy, LayoutGrid, Sparkles } from 'lucide-react';
+import { Loader2, Package, Percent, ShoppingBag, BarChart3, MessageCircle, Image, Video, Gift, PartyPopper, Trophy, LayoutGrid, Sparkles, Users, Clock, Heart, Info } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SalesAnalytics from '@/components/admin/SalesAnalytics';
@@ -19,6 +19,10 @@ import FestivalOfferManagement from '@/components/admin/FestivalOfferManagement'
 import LuckyWinnerManagement from '@/components/admin/LuckyWinnerManagement';
 import SectionManagement from '@/components/admin/SectionManagement';
 import HeroManagement from '@/components/admin/HeroManagement';
+import TestimonialManagement from '@/components/admin/TestimonialManagement';
+import AboutContentManagement from '@/components/admin/AboutContentManagement';
+import LoyaltyManagement from '@/components/admin/LoyaltyManagement';
+import LimitedTimeOfferManagement from '@/components/admin/LimitedTimeOfferManagement';
 
 interface Product {
   id: string;

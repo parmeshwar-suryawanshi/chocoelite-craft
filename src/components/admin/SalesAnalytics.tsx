@@ -2,9 +2,10 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, TrendingUp, ShoppingCart, IndianRupee, Package, MessageCircle, Smartphone } from 'lucide-react';
+import { Loader2, TrendingUp, ShoppingCart, IndianRupee, Package, MessageCircle, Smartphone, Eye, MousePointer, Target } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
 import { format, subDays, startOfDay, endOfDay } from 'date-fns';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 interface OrderWithItems {
   id: string;
@@ -30,6 +31,15 @@ interface AnalyticsData {
   statusBreakdown: { name: string; value: number }[];
   sourceBreakdown: { name: string; value: number; revenue: number }[];
   recentOrders: OrderWithItems[];
+  offerAnalytics: { 
+    offer_id: string; 
+    title: string;
+    views: number; 
+    clicks: number; 
+    conversions: number; 
+    revenue: number;
+    ctr: number;
+  }[];
 }
 
 const COLORS = ['hsl(var(--primary))', 'hsl(var(--secondary))', 'hsl(var(--accent))', 'hsl(var(--muted))'];
@@ -46,23 +56,34 @@ const SalesAnalytics = () => {
     try {
       const thirtyDaysAgo = subDays(new Date(), 30);
 
-      const { data: orders, error } = await supabase
-        .from('orders')
-        .select('*')
-        .gte('created_at', thirtyDaysAgo.toISOString())
-        .order('created_at', { ascending: false });
+      const [ordersRes, offerAnalyticsRes, offersRes] = await Promise.all([
+        supabase
+          .from('orders')
+          .select('*')
+          .gte('created_at', thirtyDaysAgo.toISOString())
+          .order('created_at', { ascending: false }),
+        supabase
+          .from('offer_analytics')
+          .select('*')
+          .gte('date', thirtyDaysAgo.toISOString().split('T')[0]),
+        supabase
+          .from('limited_time_offers')
+          .select('id, title')
+      ]);
 
-      if (error) throw error;
+      const orders = ordersRes.data || [];
+      const offerAnalyticsData = offerAnalyticsRes.data || [];
+      const offers = offersRes.data || [];
 
-      const totalRevenue = orders?.reduce((sum, order) => sum + Number(order.total_amount), 0) || 0;
-      const totalOrders = orders?.length || 0;
+      const totalRevenue = orders.reduce((sum, order) => sum + Number(order.total_amount), 0);
+      const totalOrders = orders.length;
       const averageOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
-      const pendingOrders = orders?.filter((o) => o.status === 'pending').length || 0;
-      const completedOrders = orders?.filter((o) => o.delivery_status === 'delivered').length || 0;
+      const pendingOrders = orders.filter((o) => o.status === 'pending').length;
+      const completedOrders = orders.filter((o) => o.delivery_status === 'delivered').length;
 
       // Order source breakdown
-      const appOrdersList = orders?.filter((o) => o.order_source === 'app' || !o.order_source) || [];
-      const whatsappOrdersList = orders?.filter((o) => o.order_source === 'whatsapp') || [];
+      const appOrdersList = orders.filter((o) => o.order_source === 'app' || !o.order_source);
+      const whatsappOrdersList = orders.filter((o) => o.order_source === 'whatsapp');
       const appOrders = appOrdersList.length;
       const whatsappOrders = whatsappOrdersList.length;
       const appRevenue = appOrdersList.reduce((sum, order) => sum + Number(order.total_amount), 0);
@@ -75,10 +96,10 @@ const SalesAnalytics = () => {
         const dayStart = startOfDay(date);
         const dayEnd = endOfDay(date);
         
-        const dayOrders = orders?.filter((order) => {
+        const dayOrders = orders.filter((order) => {
           const orderDate = new Date(order.created_at);
           return orderDate >= dayStart && orderDate <= dayEnd;
-        }) || [];
+        });
 
         const dayAppOrders = dayOrders.filter((o) => o.order_source === 'app' || !o.order_source);
         const dayWhatsappOrders = dayOrders.filter((o) => o.order_source === 'whatsapp');
@@ -94,7 +115,7 @@ const SalesAnalytics = () => {
 
       // Status breakdown
       const statusCounts: Record<string, number> = {};
-      orders?.forEach((order) => {
+      orders.forEach((order) => {
         statusCounts[order.delivery_status] = (statusCounts[order.delivery_status] || 0) + 1;
       });
       const statusBreakdown = Object.entries(statusCounts).map(([name, value]) => ({
@@ -107,6 +128,31 @@ const SalesAnalytics = () => {
         { name: 'App Orders', value: appOrders, revenue: appRevenue },
         { name: 'WhatsApp Orders', value: whatsappOrders, revenue: whatsappRevenue },
       ];
+
+      // Offer analytics aggregation
+      const offerAnalyticsMap = new Map<string, { views: number; clicks: number; conversions: number; revenue: number }>();
+      offerAnalyticsData.forEach((a) => {
+        const existing = offerAnalyticsMap.get(a.offer_id) || { views: 0, clicks: 0, conversions: 0, revenue: 0 };
+        offerAnalyticsMap.set(a.offer_id, {
+          views: existing.views + (a.views || 0),
+          clicks: existing.clicks + (a.clicks || 0),
+          conversions: existing.conversions + (a.conversions || 0),
+          revenue: existing.revenue + Number(a.revenue_generated || 0),
+        });
+      });
+
+      const offerAnalyticsList = offers.map((offer) => {
+        const stats = offerAnalyticsMap.get(offer.id) || { views: 0, clicks: 0, conversions: 0, revenue: 0 };
+        return {
+          offer_id: offer.id,
+          title: offer.title,
+          views: stats.views,
+          clicks: stats.clicks,
+          conversions: stats.conversions,
+          revenue: stats.revenue,
+          ctr: stats.views > 0 ? (stats.clicks / stats.views) * 100 : 0,
+        };
+      }).filter(o => o.views > 0 || o.clicks > 0 || o.conversions > 0);
 
       setAnalytics({
         totalRevenue,
@@ -121,7 +167,8 @@ const SalesAnalytics = () => {
         dailyRevenue,
         statusBreakdown,
         sourceBreakdown,
-        recentOrders: orders?.slice(0, 5) || [],
+        recentOrders: orders.slice(0, 5),
+        offerAnalytics: offerAnalyticsList,
       });
     } catch (error) {
       console.error('Error fetching analytics:', error);
@@ -470,6 +517,71 @@ const SalesAnalytics = () => {
           </div>
         </CardContent>
       </Card>
+
+      {/* Offer Performance Analytics */}
+      {analytics.offerAnalytics.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Target className="h-5 w-5 text-primary" />
+              Offer Performance
+            </CardTitle>
+            <CardDescription>Views, clicks, and conversions for limited time offers</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Offer</TableHead>
+                  <TableHead className="text-center">
+                    <div className="flex items-center justify-center gap-1">
+                      <Eye className="h-4 w-4" />
+                      Views
+                    </div>
+                  </TableHead>
+                  <TableHead className="text-center">
+                    <div className="flex items-center justify-center gap-1">
+                      <MousePointer className="h-4 w-4" />
+                      Clicks
+                    </div>
+                  </TableHead>
+                  <TableHead className="text-center">CTR</TableHead>
+                  <TableHead className="text-center">Conversions</TableHead>
+                  <TableHead className="text-right">Revenue</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {analytics.offerAnalytics.map((offer) => (
+                  <TableRow key={offer.offer_id}>
+                    <TableCell className="font-medium max-w-[200px] truncate">
+                      {offer.title}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      <Badge variant="outline">{offer.views.toLocaleString()}</Badge>
+                    </TableCell>
+                    <TableCell className="text-center">
+                      <Badge variant="secondary">{offer.clicks.toLocaleString()}</Badge>
+                    </TableCell>
+                    <TableCell className="text-center">
+                      <Badge variant={offer.ctr > 5 ? 'default' : 'outline'}>
+                        {offer.ctr.toFixed(1)}%
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-center">
+                      <Badge variant="default" className="bg-green-500">
+                        {offer.conversions}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-right font-semibold">
+                      ₹{offer.revenue.toLocaleString()}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 };

@@ -297,6 +297,10 @@ const Admin = () => {
               <Percent className="h-4 w-4" />
               <span className="hidden sm:inline">Offers</span>
             </TabsTrigger>
+            <TabsTrigger value="limited-offers" className="gap-2">
+              <Clock className="h-4 w-4" />
+              <span className="hidden sm:inline">Time Offers</span>
+            </TabsTrigger>
             <TabsTrigger value="combos" className="gap-2">
               <Gift className="h-4 w-4" />
               <span className="hidden sm:inline">Combos</span>
@@ -316,6 +320,18 @@ const Admin = () => {
             <TabsTrigger value="winners" className="gap-2">
               <Trophy className="h-4 w-4" />
               <span className="hidden sm:inline">Winners</span>
+            </TabsTrigger>
+            <TabsTrigger value="testimonials" className="gap-2">
+              <Users className="h-4 w-4" />
+              <span className="hidden sm:inline">Testimonials</span>
+            </TabsTrigger>
+            <TabsTrigger value="about" className="gap-2">
+              <Info className="h-4 w-4" />
+              <span className="hidden sm:inline">About</span>
+            </TabsTrigger>
+            <TabsTrigger value="loyalty" className="gap-2">
+              <Heart className="h-4 w-4" />
+              <span className="hidden sm:inline">Loyalty</span>
             </TabsTrigger>
             <TabsTrigger value="orders" className="gap-2">
               <ShoppingBag className="h-4 w-4" />
@@ -385,6 +401,26 @@ const Admin = () => {
           {/* WhatsApp Tab */}
           <TabsContent value="whatsapp">
             <WhatsAppOrderManagement />
+          </TabsContent>
+
+          {/* Testimonials Tab */}
+          <TabsContent value="testimonials">
+            <TestimonialManagement />
+          </TabsContent>
+
+          {/* About Content Tab */}
+          <TabsContent value="about">
+            <AboutContentManagement />
+          </TabsContent>
+
+          {/* Loyalty Program Tab */}
+          <TabsContent value="loyalty">
+            <LoyaltyManagement />
+          </TabsContent>
+
+          {/* Limited Time Offers Tab */}
+          <TabsContent value="limited-offers">
+            <LimitedTimeOfferManagement />
           </TabsContent>
         </Tabs>
       </div>

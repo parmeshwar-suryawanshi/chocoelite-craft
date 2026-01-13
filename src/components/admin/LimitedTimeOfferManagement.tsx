@@ -7,13 +7,15 @@ import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Plus, Save, Trash2, Loader2, Edit2, Clock, Eye, BarChart3, History } from 'lucide-react';
+import { Plus, Save, Trash2, Loader2, Edit2, Clock, BarChart3, Eye, History } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { format, differenceInSeconds, differenceInDays } from 'date-fns';
+import { format, differenceInSeconds } from 'date-fns';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface LimitedTimeOffer {
   id: string;
@@ -44,12 +46,6 @@ interface OfferAnalytics {
   conversions: number;
   revenue_generated: number;
   date: string;
-}
-
-interface LimitedTimeOfferManagementProps {
-  offers: LimitedTimeOffer[];
-  analytics: OfferAnalytics[];
-  onRefresh: () => void;
 }
 
 const offerTypes = [
@@ -107,12 +103,44 @@ const CountdownTimer = ({ endDate }: { endDate: string }) => {
   );
 };
 
-const LimitedTimeOfferManagement = ({ offers, analytics, onRefresh }: LimitedTimeOfferManagementProps) => {
+const LimitedTimeOfferManagement = () => {
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [saving, setSaving] = useState(false);
   const [editingOffer, setEditingOffer] = useState<LimitedTimeOffer | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [viewingAnalytics, setViewingAnalytics] = useState<string | null>(null);
+
+  const { data: offers = [], isLoading: offersLoading } = useQuery({
+    queryKey: ['admin-limited-time-offers'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('limited_time_offers')
+        .select('*')
+        .order('display_order', { ascending: true });
+      if (error) throw error;
+      return data as LimitedTimeOffer[];
+    },
+  });
+
+  const { data: analytics = [], isLoading: analyticsLoading } = useQuery({
+    queryKey: ['admin-offer-analytics'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('offer_analytics')
+        .select('*')
+        .order('date', { ascending: false });
+      if (error) throw error;
+      return data as OfferAnalytics[];
+    },
+  });
+
+  const isLoading = offersLoading || analyticsLoading;
+
+  const onRefresh = () => {
+    queryClient.invalidateQueries({ queryKey: ['admin-limited-time-offers'] });
+    queryClient.invalidateQueries({ queryKey: ['admin-offer-analytics'] });
+  };
 
   const now = new Date();
   const activeOffers = offers.filter(o => new Date(o.end_date) > now && new Date(o.start_date) <= now);

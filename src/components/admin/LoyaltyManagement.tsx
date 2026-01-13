@@ -12,6 +12,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface LoyaltyTier {
   id: string;
@@ -35,12 +37,6 @@ interface LoyaltyEarnRule {
   is_active: boolean;
 }
 
-interface LoyaltyManagementProps {
-  tiers: LoyaltyTier[];
-  earnRules: LoyaltyEarnRule[];
-  onRefresh: () => void;
-}
-
 const iconMap: Record<string, React.ElementType> = {
   Gift,
   Award,
@@ -57,14 +53,46 @@ const colorOptions = [
   'red-400', 'red-600', 'pink-400', 'pink-600',
 ];
 
-const LoyaltyManagement = ({ tiers, earnRules, onRefresh }: LoyaltyManagementProps) => {
+const LoyaltyManagement = () => {
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [saving, setSaving] = useState(false);
   const [editingTier, setEditingTier] = useState<LoyaltyTier | null>(null);
   const [editingRule, setEditingRule] = useState<LoyaltyEarnRule | null>(null);
   const [tierDialogOpen, setTierDialogOpen] = useState(false);
   const [ruleDialogOpen, setRuleDialogOpen] = useState(false);
   const [benefitsText, setBenefitsText] = useState('');
+
+  const { data: tiers = [], isLoading: tiersLoading } = useQuery({
+    queryKey: ['admin-loyalty-tiers'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('loyalty_tiers')
+        .select('*')
+        .order('display_order', { ascending: true });
+      if (error) throw error;
+      return data as LoyaltyTier[];
+    },
+  });
+
+  const { data: earnRules = [], isLoading: rulesLoading } = useQuery({
+    queryKey: ['admin-loyalty-earn-rules'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('loyalty_earn_rules')
+        .select('*')
+        .order('display_order', { ascending: true });
+      if (error) throw error;
+      return data as LoyaltyEarnRule[];
+    },
+  });
+
+  const isLoading = tiersLoading || rulesLoading;
+
+  const onRefresh = () => {
+    queryClient.invalidateQueries({ queryKey: ['admin-loyalty-tiers'] });
+    queryClient.invalidateQueries({ queryKey: ['admin-loyalty-earn-rules'] });
+  };
 
   const defaultTier: Partial<LoyaltyTier> = {
     name: '',

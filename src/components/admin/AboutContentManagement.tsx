@@ -12,6 +12,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface AboutContent {
   id: string;
@@ -21,11 +23,6 @@ interface AboutContent {
   icon: string | null;
   display_order: number;
   is_active: boolean;
-}
-
-interface AboutContentManagementProps {
-  aboutContent: AboutContent[];
-  onRefresh: () => void;
 }
 
 const iconMap: Record<string, React.ElementType> = {
@@ -46,11 +43,26 @@ const contentTypes = [
 
 const iconOptions = ['Heart', 'Leaf', 'Sparkles', 'Award', 'Target', 'Eye'];
 
-const AboutContentManagement = ({ aboutContent, onRefresh }: AboutContentManagementProps) => {
+const AboutContentManagement = () => {
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [saving, setSaving] = useState(false);
   const [editingItem, setEditingItem] = useState<AboutContent | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+
+  const { data: aboutContent = [], isLoading } = useQuery({
+    queryKey: ['admin-about-content'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('about_content')
+        .select('*')
+        .order('display_order', { ascending: true });
+      if (error) throw error;
+      return data as AboutContent[];
+    },
+  });
+
+  const onRefresh = () => queryClient.invalidateQueries({ queryKey: ['admin-about-content'] });
 
   const defaultItem: Partial<AboutContent> = {
     content_type: 'feature',

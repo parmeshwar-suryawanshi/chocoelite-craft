@@ -11,6 +11,8 @@ import { Plus, Save, Trash2, Loader2, Star, Edit2 } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface Testimonial {
   id: string;
@@ -23,16 +25,26 @@ interface Testimonial {
   display_order: number;
 }
 
-interface TestimonialManagementProps {
-  testimonials: Testimonial[];
-  onRefresh: () => void;
-}
-
-const TestimonialManagement = ({ testimonials, onRefresh }: TestimonialManagementProps) => {
+const TestimonialManagement = () => {
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [saving, setSaving] = useState(false);
   const [editingItem, setEditingItem] = useState<Testimonial | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+
+  const { data: testimonials = [], isLoading } = useQuery({
+    queryKey: ['admin-testimonials'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('testimonials')
+        .select('*')
+        .order('display_order', { ascending: true });
+      if (error) throw error;
+      return data as Testimonial[];
+    },
+  });
+
+  const onRefresh = () => queryClient.invalidateQueries({ queryKey: ['admin-testimonials'] });
 
   const defaultItem: Partial<Testimonial> = {
     name: '',

@@ -1,7 +1,8 @@
+import { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Gift, Sparkles, Percent, Clock, Truck, ArrowRight, Zap } from 'lucide-react';
+import { Gift, Sparkles, Percent, Clock, Truck, ArrowRight, Zap, Timer, Flame } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery } from '@tanstack/react-query';
@@ -18,8 +19,73 @@ interface Offer {
   is_active: boolean;
 }
 
+interface LimitedTimeOffer {
+  id: string;
+  title: string;
+  description: string;
+  discount_type: string;
+  discount_value: number | null;
+  code: string | null;
+  start_date: string;
+  end_date: string;
+  is_active: boolean;
+  is_featured: boolean;
+  badge_text: string | null;
+  banner_image: string | null;
+}
+
+const CountdownTimer = ({ endDate }: { endDate: string }) => {
+  const [timeLeft, setTimeLeft] = useState({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+  });
+
+  useEffect(() => {
+    const calculateTimeLeft = () => {
+      const difference = new Date(endDate).getTime() - new Date().getTime();
+      
+      if (difference > 0) {
+        setTimeLeft({
+          days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+          hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+          minutes: Math.floor((difference / 1000 / 60) % 60),
+          seconds: Math.floor((difference / 1000) % 60),
+        });
+      } else {
+        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+      }
+    };
+
+    calculateTimeLeft();
+    const timer = setInterval(calculateTimeLeft, 1000);
+    return () => clearInterval(timer);
+  }, [endDate]);
+
+  return (
+    <div className="flex gap-3 md:gap-4">
+      {[
+        { label: 'Days', value: timeLeft.days },
+        { label: 'Hours', value: timeLeft.hours },
+        { label: 'Mins', value: timeLeft.minutes },
+        { label: 'Secs', value: timeLeft.seconds },
+      ].map((item, index) => (
+        <div key={index} className="text-center">
+          <div className="bg-white/20 backdrop-blur-sm rounded-lg p-2 md:p-3 min-w-[50px] md:min-w-[70px] border border-white/30">
+            <span className="text-xl md:text-3xl font-bold font-display text-white">
+              {String(item.value).padStart(2, '0')}
+            </span>
+          </div>
+          <p className="text-xs mt-1 text-amber-100/80">{item.label}</p>
+        </div>
+      ))}
+    </div>
+  );
+};
+
 const SpecialOffers = () => {
-  const { data: offers, isLoading } = useQuery({
+  const { data: offers, isLoading: offersLoading } = useQuery({
     queryKey: ['offers'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -32,6 +98,28 @@ const SpecialOffers = () => {
       return data as Offer[];
     }
   });
+
+  const { data: featuredOffer, isLoading: featuredLoading } = useQuery({
+    queryKey: ['featured-limited-offer'],
+    queryFn: async () => {
+      const now = new Date().toISOString();
+      const { data, error } = await supabase
+        .from('limited_time_offers')
+        .select('*')
+        .eq('is_active', true)
+        .eq('is_featured', true)
+        .lte('start_date', now)
+        .gte('end_date', now)
+        .order('display_order', { ascending: true })
+        .limit(1)
+        .maybeSingle();
+      
+      if (error) throw error;
+      return data as LimitedTimeOffer | null;
+    }
+  });
+
+  const isLoading = offersLoading || featuredLoading;
 
   const getOfferIcon = (index: number) => {
     const icons = [Percent, Gift, Truck];
@@ -87,8 +175,78 @@ const SpecialOffers = () => {
           </p>
         </div>
 
+        {/* Featured Limited Time Offer Banner */}
+        {featuredOffer && (
+          <div className="mb-14 relative overflow-hidden rounded-3xl shadow-2xl group">
+            <div className="absolute inset-0 bg-gradient-to-r from-red-600 via-orange-500 to-amber-500" />
+            {featuredOffer.banner_image && (
+              <div 
+                className="absolute inset-0 opacity-20"
+                style={{
+                  backgroundImage: `url(${featuredOffer.banner_image})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                }}
+              />
+            )}
+            <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDM0djItSDI0di0yaDEyem0wLTRWMjhIMjR2Mmgxem0tMi02djJIMjZ2LTJoOHptNC0ydjJIMjJ2LTJoMTZ6Ii8+PC9nPjwvZz48L3N2Zz4=')] opacity-30" />
+            <div className="absolute top-0 right-0 w-96 h-96 bg-yellow-400/20 rounded-full blur-3xl animate-pulse" />
+            
+            <div className="relative z-10 p-8 md:p-12 text-white">
+              <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
+                <div className="text-center lg:text-left flex-1">
+                  <div className="flex items-center gap-3 justify-center lg:justify-start mb-4">
+                    <Badge className="bg-white/20 text-white border-white/30 backdrop-blur-sm px-4 py-1.5 text-sm animate-pulse">
+                      <Flame className="h-4 w-4 mr-2" />
+                      {featuredOffer.badge_text || 'LIMITED TIME'}
+                    </Badge>
+                    <Badge className="bg-red-500/50 text-white border-red-400/30 backdrop-blur-sm px-3 py-1">
+                      <Timer className="h-3 w-3 mr-1" />
+                      Ends Soon
+                    </Badge>
+                  </div>
+                  <h2 className="text-3xl md:text-5xl font-display font-bold mb-4 drop-shadow-lg">
+                    {featuredOffer.title}
+                  </h2>
+                  <p className="text-lg md:text-xl mb-6 max-w-xl text-white/90 leading-relaxed">
+                    {featuredOffer.description}
+                  </p>
+                  {featuredOffer.discount_value && (
+                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 mb-6">
+                      <Sparkles className="h-5 w-5 text-yellow-300" />
+                      <span className="font-bold text-lg">
+                        {featuredOffer.discount_type === 'percentage' 
+                          ? `${featuredOffer.discount_value}% OFF` 
+                          : `₹${featuredOffer.discount_value} OFF`}
+                      </span>
+                    </div>
+                  )}
+                </div>
+                
+                <div className="flex flex-col items-center gap-6">
+                  <div className="text-center">
+                    <p className="text-sm text-amber-100 mb-3 font-medium">Offer ends in:</p>
+                    <CountdownTimer endDate={featuredOffer.end_date} />
+                  </div>
+                  <Link to="/shop">
+                    <Button size="lg" className="bg-white text-red-600 hover:bg-amber-50 shadow-xl font-bold px-10 py-7 text-lg group/btn transition-all duration-300 hover:scale-105">
+                      Grab This Deal
+                      <ArrowRight className="ml-2 w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
+                    </Button>
+                  </Link>
+                  {featuredOffer.code && (
+                    <span className="text-sm text-amber-100/80">
+                      Use code: <span className="font-bold text-white">{featuredOffer.code}</span>
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Main Banner Offer */}
-        {mainOffer && (
+        {mainOffer && !featuredOffer && (
           <div className="mb-14 relative overflow-hidden rounded-3xl shadow-2xl group">
             <div className="absolute inset-0 gradient-luxury" />
             <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDM0djItSDI0di0yaDEyem0wLTRWMjhIMjR2Mmgxem0tMi02djJIMjZ2LTJoOHptNC0ydjJIMjJ2LTJoMTZ6Ii8+PC9nPjwvZz48L3N2Zz4=')] opacity-30" />

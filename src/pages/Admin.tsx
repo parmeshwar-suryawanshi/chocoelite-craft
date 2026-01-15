@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Package, Percent, ShoppingBag, BarChart3, MessageCircle, Image, Video, Gift, PartyPopper, Trophy, LayoutGrid, Sparkles, Users, Clock, Heart, Info } from 'lucide-react';
+import { Loader2, Package, Percent, ShoppingBag, BarChart3, MessageCircle, Image, Video, Gift, PartyPopper, Trophy, LayoutGrid, Sparkles, Users, Clock, Heart, Info, Palette } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SalesAnalytics from '@/components/admin/SalesAnalytics';
@@ -23,6 +23,7 @@ import TestimonialManagement from '@/components/admin/TestimonialManagement';
 import AboutContentManagement from '@/components/admin/AboutContentManagement';
 import LoyaltyManagement from '@/components/admin/LoyaltyManagement';
 import LimitedTimeOfferManagement from '@/components/admin/LimitedTimeOfferManagement';
+import SectionStyleManagement from '@/components/admin/SectionStyleManagement';
 
 interface Product {
   id: string;
@@ -281,6 +282,10 @@ const Admin = () => {
               <LayoutGrid className="h-4 w-4" />
               <span className="hidden sm:inline">Sections</span>
             </TabsTrigger>
+            <TabsTrigger value="styles" className="gap-2">
+              <Palette className="h-4 w-4" />
+              <span className="hidden sm:inline">Styles</span>
+            </TabsTrigger>
             <TabsTrigger value="hero" className="gap-2">
               <Sparkles className="h-4 w-4" />
               <span className="hidden sm:inline">Hero</span>
@@ -346,6 +351,11 @@ const Admin = () => {
           {/* Sections Tab */}
           <TabsContent value="sections">
             <SectionManagement sections={siteSections} onRefresh={fetchData} />
+          </TabsContent>
+
+          {/* Styles Tab */}
+          <TabsContent value="styles">
+            <SectionStyleManagement />
           </TabsContent>
 
           {/* Hero Tab */}

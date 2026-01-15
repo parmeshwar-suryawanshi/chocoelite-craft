@@ -872,6 +872,117 @@ export type Database = {
           },
         ]
       }
+      section_styles: {
+        Row: {
+          accent_color: string | null
+          background_color: string | null
+          background_gradient_direction: string | null
+          background_gradient_from: string | null
+          background_gradient_to: string | null
+          background_image_url: string | null
+          background_overlay_opacity: number | null
+          background_type: string | null
+          badge_bg: string | null
+          badge_text: string | null
+          button_primary_bg: string | null
+          button_primary_border_radius: string | null
+          button_primary_style: string | null
+          button_primary_text: string | null
+          button_secondary_bg: string | null
+          button_secondary_border_color: string | null
+          button_secondary_border_radius: string | null
+          button_secondary_text: string | null
+          card_bg: string | null
+          card_border_color: string | null
+          card_border_radius: string | null
+          card_shadow: string | null
+          created_at: string
+          custom_css: string | null
+          heading_color: string | null
+          heading_font_size: string | null
+          id: string
+          padding_bottom: string | null
+          padding_top: string | null
+          padding_x: string | null
+          section_key: string
+          subheading_color: string | null
+          text_color: string | null
+          updated_at: string
+        }
+        Insert: {
+          accent_color?: string | null
+          background_color?: string | null
+          background_gradient_direction?: string | null
+          background_gradient_from?: string | null
+          background_gradient_to?: string | null
+          background_image_url?: string | null
+          background_overlay_opacity?: number | null
+          background_type?: string | null
+          badge_bg?: string | null
+          badge_text?: string | null
+          button_primary_bg?: string | null
+          button_primary_border_radius?: string | null
+          button_primary_style?: string | null
+          button_primary_text?: string | null
+          button_secondary_bg?: string | null
+          button_secondary_border_color?: string | null
+          button_secondary_border_radius?: string | null
+          button_secondary_text?: string | null
+          card_bg?: string | null
+          card_border_color?: string | null
+          card_border_radius?: string | null
+          card_shadow?: string | null
+          created_at?: string
+          custom_css?: string | null
+          heading_color?: string | null
+          heading_font_size?: string | null
+          id?: string
+          padding_bottom?: string | null
+          padding_top?: string | null
+          padding_x?: string | null
+          section_key: string
+          subheading_color?: string | null
+          text_color?: string | null
+          updated_at?: string
+        }
+        Update: {
+          accent_color?: string | null
+          background_color?: string | null
+          background_gradient_direction?: string | null
+          background_gradient_from?: string | null
+          background_gradient_to?: string | null
+          background_image_url?: string | null
+          background_overlay_opacity?: number | null
+          background_type?: string | null
+          badge_bg?: string | null
+          badge_text?: string | null
+          button_primary_bg?: string | null
+          button_primary_border_radius?: string | null
+          button_primary_style?: string | null
+          button_primary_text?: string | null
+          button_secondary_bg?: string | null
+          button_secondary_border_color?: string | null
+          button_secondary_border_radius?: string | null
+          button_secondary_text?: string | null
+          card_bg?: string | null
+          card_border_color?: string | null
+          card_border_radius?: string | null
+          card_shadow?: string | null
+          created_at?: string
+          custom_css?: string | null
+          heading_color?: string | null
+          heading_font_size?: string | null
+          id?: string
+          padding_bottom?: string | null
+          padding_top?: string | null
+          padding_x?: string | null
+          section_key?: string
+          subheading_color?: string | null
+          text_color?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       site_sections: {
         Row: {
           created_at: string

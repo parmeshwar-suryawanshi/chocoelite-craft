@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ShoppingBag, Star, Eye } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useSectionStyle, generateSectionStyles } from "@/hooks/useSectionStyles";
 
 interface BulkPack {
   size: number;
@@ -41,10 +42,13 @@ const Products = () => {
     }
   });
 
+  const { style } = useSectionStyle('products');
+  const styles = generateSectionStyles(style);
+
   if (isLoading) {
     return (
-      <section id="products" className="py-24 bg-gradient-to-b from-background to-muted/30">
-        <div className="container mx-auto px-4">
+      <section id="products" className={`${style.padding_top} ${style.padding_bottom}`} style={styles.containerStyle}>
+        <div className={`container mx-auto ${style.padding_x}`}>
           <div className="text-center mb-16">
             <Skeleton className="h-10 w-48 mx-auto mb-4" />
             <Skeleton className="h-6 w-96 mx-auto" />
@@ -64,17 +68,20 @@ const Products = () => {
   }
 
   return (
-    <section id="products" className="py-24 bg-gradient-to-b from-background to-muted/30">
-      <div className="container mx-auto px-4">
+    <section id="products" className={`${style.padding_top} ${style.padding_bottom}`} style={styles.containerStyle}>
+      <div className={`container mx-auto ${style.padding_x}`}>
         {/* Section Header */}
         <div className="text-center mb-16 space-y-4">
-          <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary rounded-full text-sm font-medium">
+          <span 
+            className="inline-block px-4 py-1.5 rounded-full text-sm font-medium"
+            style={styles.badgeStyle}
+          >
             Our Collection
           </span>
-          <h2 className="text-4xl md:text-5xl font-display font-bold text-foreground">
+          <h2 className={`${style.heading_font_size} md:text-5xl font-display font-bold`} style={styles.headingStyle}>
             Handcrafted Chocolates
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg max-w-2xl mx-auto" style={styles.subheadingStyle}>
             Discover our exquisite collection of fruit-infused chocolates, crafted with passion and premium ingredients.
           </p>
         </div>
@@ -88,8 +95,11 @@ const Products = () => {
             return (
               <Card
                 key={product.id}
-                className="group relative overflow-hidden rounded-2xl border-0 bg-card shadow-sm hover:shadow-xl transition-all duration-500"
-                style={{ animationDelay: `${index * 0.1}s` }}
+                className={`group relative overflow-hidden ${style.card_border_radius} border-0 ${style.card_shadow} hover:shadow-xl transition-all duration-500`}
+                style={{ 
+                  animationDelay: `${index * 0.1}s`,
+                  backgroundColor: style.card_bg,
+                }}
               >
                 {/* Image Container */}
                 <div className="relative aspect-square overflow-hidden bg-muted/50">
@@ -120,7 +130,10 @@ const Products = () => {
                   {/* Badges */}
                   <div className="absolute top-4 left-4 flex flex-col gap-2">
                     {product.bestseller && (
-                      <Badge className="bg-amber-500 text-white border-0 shadow-md">
+                      <Badge 
+                        className="border-0 shadow-md"
+                        style={styles.badgeStyle}
+                      >
                         <Star className="w-3 h-3 mr-1 fill-current" />
                         Bestseller
                       </Badge>
@@ -159,25 +172,28 @@ const Products = () => {
                   </div>
 
                   {/* Name */}
-                  <h3 className="text-xl font-semibold text-foreground line-clamp-1 group-hover:text-primary transition-colors">
+                  <h3 
+                    className="text-xl font-semibold line-clamp-1 transition-colors"
+                    style={{ color: style.heading_color }}
+                  >
                     {product.name}
                   </h3>
 
                   {/* Description */}
-                  <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
+                  <p className="text-sm line-clamp-2 leading-relaxed" style={{ color: style.text_color }}>
                     {product.description}
                   </p>
 
                   {/* Price & Pack Info */}
                   <div className="flex items-end justify-between pt-2 border-t border-border/50">
                     <div>
-                      <p className="text-xs text-muted-foreground mb-1">Starting from</p>
-                      <p className="text-2xl font-bold text-primary">
+                      <p className="text-xs mb-1" style={{ color: style.subheading_color }}>Starting from</p>
+                      <p className="text-2xl font-bold" style={{ color: style.accent_color }}>
                         ₹{lowestPrice}
                       </p>
                     </div>
                     {bulkPacks.length > 0 && (
-                      <span className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded-md">
+                      <span className="text-xs bg-muted px-2 py-1 rounded-md" style={{ color: style.text_color }}>
                         {bulkPacks.length} pack {bulkPacks.length === 1 ? 'size' : 'sizes'}
                       </span>
                     )}
@@ -190,7 +206,12 @@ const Products = () => {
 
         {/* View All Button */}
         <div className="text-center mt-12">
-          <Button asChild size="lg" variant="outline" className="rounded-full px-8">
+          <Button 
+            asChild 
+            size="lg" 
+            className={`${style.button_primary_border_radius} px-8`}
+            style={styles.primaryButtonStyle}
+          >
             <Link to="/shop">
               <ShoppingBag className="w-5 h-5 mr-2" />
               View All Products

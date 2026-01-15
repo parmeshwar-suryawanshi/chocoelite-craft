@@ -1,8 +1,11 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ShoppingBag, Star, Eye } from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface BulkPack {
   size: number;
@@ -20,6 +23,8 @@ interface Product {
   limited_edition: boolean;
   bestseller: boolean;
   bulk_packs: BulkPack[];
+  rating?: number;
+  category?: string;
 }
 
 const Products = () => {
@@ -38,15 +43,15 @@ const Products = () => {
 
   if (isLoading) {
     return (
-      <section id="products" className="py-20 bg-background">
+      <section id="products" className="py-24 bg-gradient-to-b from-background to-muted/30">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <Skeleton className="h-12 w-64 mx-auto mb-4" />
+            <Skeleton className="h-10 w-48 mx-auto mb-4" />
             <Skeleton className="h-6 w-96 mx-auto" />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {[1, 2, 3, 4, 5, 6].map((i) => (
-              <Skeleton key={i} className="aspect-square rounded-lg" />
+              <Skeleton key={i} className="aspect-[4/5] rounded-2xl" />
             ))}
           </div>
         </div>
@@ -59,75 +64,138 @@ const Products = () => {
   }
 
   return (
-    <section id="products" className="py-20 bg-background">
+    <section id="products" className="py-24 bg-gradient-to-b from-background to-muted/30">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-16 animate-fade-in-up">
-          <h2 className="text-3xl md:text-5xl font-display font-bold mb-4 text-gradient">
-            Our Products
+        {/* Section Header */}
+        <div className="text-center mb-16 space-y-4">
+          <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary rounded-full text-sm font-medium">
+            Our Collection
+          </span>
+          <h2 className="text-4xl md:text-5xl font-display font-bold text-foreground">
+            Handcrafted Chocolates
           </h2>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-            Discover our exquisite collection of fruit-infused chocolates, where nature
-            meets indulgence in every handcrafted piece.
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Discover our exquisite collection of fruit-infused chocolates, crafted with passion and premium ingredients.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Products Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {products.map((product, index) => {
             const bulkPacks = product.bulk_packs as BulkPack[] || [];
+            const lowestPrice = bulkPacks.length > 0 ? bulkPacks[0].price : product.price;
             
             return (
               <Card
                 key={product.id}
-                className="group overflow-hidden hover-lift border-none shadow-lg"
+                className="group relative overflow-hidden rounded-2xl border-0 bg-card shadow-sm hover:shadow-xl transition-all duration-500"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
-                <div className="relative overflow-hidden aspect-square">
+                {/* Image Container */}
+                <div className="relative aspect-square overflow-hidden bg-muted/50">
                   <img
                     src={product.image}
                     alt={product.name}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     loading="lazy"
                   />
-                  <div className="absolute top-4 right-4 flex flex-col gap-2">
-                    <Badge className="gradient-luxury text-white border-none">
-                      {product.type === 'white' ? 'White' : 'Milk'}
-                    </Badge>
-                    {product.limited_edition && (
-                      <Badge variant="destructive">Limited</Badge>
-                    )}
+                  
+                  {/* Overlay on Hover */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  
+                  {/* Quick Actions */}
+                  <div className="absolute bottom-4 left-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-300">
+                    <Button
+                      asChild
+                      size="sm"
+                      className="flex-1 bg-white/95 text-foreground hover:bg-white backdrop-blur-sm"
+                    >
+                      <Link to={`/product/${product.id}`}>
+                        <Eye className="w-4 h-4 mr-2" />
+                        View Details
+                      </Link>
+                    </Button>
+                  </div>
+
+                  {/* Badges */}
+                  <div className="absolute top-4 left-4 flex flex-col gap-2">
                     {product.bestseller && (
-                      <Badge className="bg-luxury-gold text-white">Bestseller</Badge>
+                      <Badge className="bg-amber-500 text-white border-0 shadow-md">
+                        <Star className="w-3 h-3 mr-1 fill-current" />
+                        Bestseller
+                      </Badge>
+                    )}
+                    {product.limited_edition && (
+                      <Badge variant="destructive" className="shadow-md">
+                        Limited Edition
+                      </Badge>
                     )}
                   </div>
+
+                  {/* Type Badge */}
+                  <div className="absolute top-4 right-4">
+                    <Badge 
+                      variant="secondary" 
+                      className="bg-white/90 text-foreground backdrop-blur-sm shadow-sm"
+                    >
+                      {product.type === 'white' ? 'White Chocolate' : 'Milk Chocolate'}
+                    </Badge>
+                  </div>
                 </div>
-                <CardContent className="p-6">
-                  <h3 className="text-xl font-semibold mb-2 group-hover:text-secondary transition-colors">
+
+                {/* Content */}
+                <CardContent className="p-6 space-y-4">
+                  {/* Category & Rating */}
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                      {product.category || 'Chocolate'}
+                    </span>
+                    {product.rating && (
+                      <div className="flex items-center gap-1 text-amber-500">
+                        <Star className="w-4 h-4 fill-current" />
+                        <span className="text-sm font-medium">{product.rating}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Name */}
+                  <h3 className="text-xl font-semibold text-foreground line-clamp-1 group-hover:text-primary transition-colors">
                     {product.name}
                   </h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed mb-4">
+
+                  {/* Description */}
+                  <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
                     {product.description}
                   </p>
-                  <div className="flex items-center justify-between">
+
+                  {/* Price & Pack Info */}
+                  <div className="flex items-end justify-between pt-2 border-t border-border/50">
                     <div>
-                      {bulkPacks.length > 0 ? (
-                        <>
-                          <p className="text-xs text-muted-foreground mb-1">Starting from</p>
-                          <p className="text-2xl font-bold text-luxury-brown">₹{bulkPacks[0].price}</p>
-                        </>
-                      ) : (
-                        <p className="text-2xl font-bold text-luxury-brown">₹{product.price}</p>
-                      )}
+                      <p className="text-xs text-muted-foreground mb-1">Starting from</p>
+                      <p className="text-2xl font-bold text-primary">
+                        ₹{lowestPrice}
+                      </p>
                     </div>
                     {bulkPacks.length > 0 && (
-                      <Badge variant="outline" className="text-xs">
-                        {bulkPacks.length} pack sizes
-                      </Badge>
+                      <span className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded-md">
+                        {bulkPacks.length} pack {bulkPacks.length === 1 ? 'size' : 'sizes'}
+                      </span>
                     )}
                   </div>
                 </CardContent>
               </Card>
             );
           })}
+        </div>
+
+        {/* View All Button */}
+        <div className="text-center mt-12">
+          <Button asChild size="lg" variant="outline" className="rounded-full px-8">
+            <Link to="/shop">
+              <ShoppingBag className="w-5 h-5 mr-2" />
+              View All Products
+            </Link>
+          </Button>
         </div>
       </div>
     </section>

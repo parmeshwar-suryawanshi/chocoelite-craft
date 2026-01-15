@@ -17,7 +17,6 @@ import WhatsAppBot from "@/components/WhatsAppBot";
 import LuckyWinners from "@/components/LuckyWinners";
 import ComboOffers from "@/components/ComboOffers";
 import FestivalOffers from "@/components/FestivalOffers";
-import FlashDeals from "@/components/FlashDeals";
 import { useSiteSections } from "@/hooks/useSiteSections";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -47,7 +46,6 @@ const Index = () => {
         <main>
           {isSectionVisible('hero') && <Hero />}
           {isSectionVisible('special-offers') && <SpecialOffers />}
-          <FlashDeals />
           {isSectionVisible('products') && <Products />}
           {isSectionVisible('combo-offers') && <ComboOffers />}
           {isSectionVisible('festival-offers') && <FestivalOffers />}

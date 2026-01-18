@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
+import { useSectionStyle } from "@/hooks/useSectionStyles";
 import monogramLogo from "@/assets/monogram-logo.jpg";
 
 const Navbar = () => {
@@ -14,7 +15,13 @@ const Navbar = () => {
   const { totalItems } = useCart();
   const { user, signOut } = useAuth();
   const { isAdmin } = useIsAdmin();
+  const { style: navStyle } = useSectionStyle('navbar');
   const navigate = useNavigate();
+
+  // Build gradient from style
+  const gradientFrom = navStyle?.background_gradient_from || '#c026d3';
+  const gradientTo = navStyle?.background_gradient_to || '#9333ea';
+  const accentColor = navStyle?.accent_color || '#d946ef';
 
   useEffect(() => {
     const handleScroll = () => {
@@ -28,7 +35,7 @@ const Navbar = () => {
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         isScrolled
-          ? "bg-background/98 backdrop-blur-xl shadow-2xl border-b border-amber-200/20"
+          ? "bg-background/98 backdrop-blur-xl shadow-2xl border-b border-purple-200/20"
           : "bg-gradient-to-b from-black/40 via-black/20 to-transparent backdrop-blur-lg"
       }`}
     >
@@ -50,7 +57,7 @@ const Navbar = () => {
                 ChocoElite
               </span>
               <span className={`text-[10px] md:text-xs font-medium tracking-wider -mt-1 transition-colors duration-300 ${
-                isScrolled ? "text-muted-foreground" : "text-amber-200/90"
+                isScrolled ? "text-muted-foreground" : "text-purple-200/90"
               }`}>
                 FRUIT AT EVERY BITE
               </span>
@@ -61,29 +68,29 @@ const Navbar = () => {
           <div className="hidden md:flex items-center gap-8">
             <Link to="/shop" className={`relative font-semibold transition-all duration-300 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 hover:after:w-full after:transition-all after:duration-300 ${
               isScrolled 
-                ? "text-foreground hover:text-foreground/80 after:bg-amber-600" 
-                : "text-white hover:text-amber-200 after:bg-amber-400 drop-shadow-lg"
+                ? "text-foreground hover:text-foreground/80 after:bg-purple-600" 
+                : "text-white hover:text-purple-200 after:bg-purple-400 drop-shadow-lg"
             }`}>
               Shop
             </Link>
             <Link to="/about" className={`relative font-semibold transition-all duration-300 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 hover:after:w-full after:transition-all after:duration-300 ${
               isScrolled 
-                ? "text-foreground hover:text-foreground/80 after:bg-amber-600" 
-                : "text-white hover:text-amber-200 after:bg-amber-400 drop-shadow-lg"
+                ? "text-foreground hover:text-foreground/80 after:bg-purple-600" 
+                : "text-white hover:text-purple-200 after:bg-purple-400 drop-shadow-lg"
             }`}>
               About
             </Link>
             <Link to="/blog" className={`relative font-semibold transition-all duration-300 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 hover:after:w-full after:transition-all after:duration-300 ${
               isScrolled 
-                ? "text-foreground hover:text-foreground/80 after:bg-amber-600" 
-                : "text-white hover:text-amber-200 after:bg-amber-400 drop-shadow-lg"
+                ? "text-foreground hover:text-foreground/80 after:bg-purple-600" 
+                : "text-white hover:text-purple-200 after:bg-purple-400 drop-shadow-lg"
             }`}>
               Blog
             </Link>
             <Link to="/contact" className={`relative font-semibold transition-all duration-300 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 hover:after:w-full after:transition-all after:duration-300 ${
               isScrolled 
-                ? "text-foreground hover:text-foreground/80 after:bg-amber-600" 
-                : "text-white hover:text-amber-200 after:bg-amber-400 drop-shadow-lg"
+                ? "text-foreground hover:text-foreground/80 after:bg-purple-600" 
+                : "text-white hover:text-purple-200 after:bg-purple-400 drop-shadow-lg"
             }`}>
               Contact
             </Link>
@@ -99,7 +106,12 @@ const Navbar = () => {
             >
               <ShoppingCart className="h-5 w-5" />
               {totalItems > 0 && (
-                <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 bg-amber-500 text-amber-950 border-2 border-white shadow-lg">{totalItems}</Badge>
+                <Badge 
+                  className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 border-2 border-white shadow-lg"
+                  style={{ backgroundColor: accentColor, color: '#ffffff' }}
+                >
+                  {totalItems}
+                </Badge>
               )}
             </Button>
             {user ? (
@@ -111,8 +123,8 @@ const Navbar = () => {
                     size="sm" 
                     className={`backdrop-blur-sm transition-all duration-300 hover:scale-105 shadow-lg ${
                       isScrolled 
-                        ? "bg-amber-500/20 hover:bg-amber-500/30 text-amber-700 border border-amber-500/30"
-                        : "bg-amber-500/20 hover:bg-amber-500/30 text-amber-200 border border-amber-400/30"
+                        ? "bg-purple-500/20 hover:bg-purple-500/30 text-purple-700 border border-purple-500/30"
+                        : "bg-purple-500/20 hover:bg-purple-500/30 text-purple-200 border border-purple-400/30"
                     }`}
                   >
                     <Settings className="h-5 w-5" />
@@ -146,7 +158,8 @@ const Navbar = () => {
             ) : (
               <Button 
                 onClick={() => navigate("/auth")} 
-                className="bg-amber-500 text-amber-950 hover:bg-amber-400 font-semibold"
+                className="font-semibold"
+                style={{ backgroundColor: accentColor, color: '#ffffff' }}
               >
                 Sign In
               </Button>
@@ -177,32 +190,35 @@ const Navbar = () => {
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden mt-4 pb-4 space-y-3 bg-amber-950/90 backdrop-blur-xl rounded-2xl p-4 border border-amber-800/30 shadow-2xl animate-fade-in-up">
+          <div 
+            className="md:hidden mt-4 pb-4 space-y-3 backdrop-blur-xl rounded-2xl p-4 border border-purple-800/30 shadow-2xl animate-fade-in-up"
+            style={{ background: `linear-gradient(135deg, ${gradientFrom}ee, ${gradientTo}ee)` }}
+          >
             <Link
               to="/shop"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="block w-full text-left py-3 px-4 font-semibold rounded-lg transition-all duration-300 text-amber-100 hover:bg-amber-800/50"
+              className="block w-full text-left py-3 px-4 font-semibold rounded-lg transition-all duration-300 text-white hover:bg-white/10"
             >
               Shop
             </Link>
             <Link
               to="/about"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="block w-full text-left py-3 px-4 font-semibold rounded-lg transition-all duration-300 text-amber-100 hover:bg-amber-800/50"
+              className="block w-full text-left py-3 px-4 font-semibold rounded-lg transition-all duration-300 text-white hover:bg-white/10"
             >
               About
             </Link>
             <Link
               to="/blog"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="block w-full text-left py-3 px-4 font-semibold rounded-lg transition-all duration-300 text-amber-100 hover:bg-amber-800/50"
+              className="block w-full text-left py-3 px-4 font-semibold rounded-lg transition-all duration-300 text-white hover:bg-white/10"
             >
               Blog
             </Link>
             <Link
               to="/contact"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="block w-full text-left py-3 px-4 font-semibold rounded-lg transition-all duration-300 text-amber-100 hover:bg-amber-800/50"
+              className="block w-full text-left py-3 px-4 font-semibold rounded-lg transition-all duration-300 text-white hover:bg-white/10"
             >
               Contact
             </Link>
@@ -211,7 +227,8 @@ const Navbar = () => {
                 navigate("/cart");
                 setIsMobileMenuOpen(false);
               }}
-              className="w-full bg-amber-500 text-amber-950 font-semibold hover:bg-amber-400 shadow-lg"
+              className="w-full font-semibold shadow-lg"
+              style={{ backgroundColor: accentColor, color: '#ffffff' }}
             >
               View Cart ({totalItems})
             </Button>
@@ -223,7 +240,8 @@ const Navbar = () => {
                       navigate("/admin");
                       setIsMobileMenuOpen(false);
                     }}
-                    className="w-full bg-amber-600 text-white hover:bg-amber-700 font-semibold shadow-lg"
+                    className="w-full font-semibold shadow-lg"
+                    style={{ backgroundColor: '#7c3aed', color: '#ffffff' }}
                   >
                     <Settings className="mr-2 h-4 w-4" />
                     Admin Panel
@@ -235,7 +253,7 @@ const Navbar = () => {
                     setIsMobileMenuOpen(false);
                   }}
                   variant="outline"
-                  className="w-full border-amber-700 text-amber-100 hover:bg-amber-800/50"
+                  className="w-full border-white/30 text-white hover:bg-white/10"
                 >
                   <User className="mr-2 h-4 w-4" />
                   My Account
@@ -246,7 +264,7 @@ const Navbar = () => {
                     setIsMobileMenuOpen(false);
                   }}
                   variant="outline"
-                  className="w-full border-amber-700 text-amber-100 hover:bg-amber-800/50"
+                  className="w-full border-white/30 text-white hover:bg-white/10"
                 >
                   <LogOut className="mr-2 h-4 w-4" />
                   Sign Out
@@ -258,7 +276,8 @@ const Navbar = () => {
                   navigate("/auth");
                   setIsMobileMenuOpen(false);
                 }}
-                className="w-full bg-amber-500 text-amber-950 hover:bg-amber-400"
+                className="w-full"
+                style={{ backgroundColor: accentColor, color: '#ffffff' }}
               >
                 Sign In
               </Button>

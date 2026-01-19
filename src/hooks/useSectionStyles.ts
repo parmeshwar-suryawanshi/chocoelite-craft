@@ -34,6 +34,33 @@ export interface SectionStyle {
   badge_text: string;
   accent_color: string;
   custom_css: string | null;
+  // New enhanced style properties
+  animation_type: string;
+  animation_duration: string;
+  animation_delay: string;
+  border_width: string;
+  border_color: string;
+  border_style: string;
+  font_family: string;
+  heading_font_weight: string;
+  text_font_weight: string;
+  letter_spacing: string;
+  line_height: string;
+  hover_effect: string;
+  overlay_color: string;
+  icon_color: string;
+  icon_size: string;
+  divider_style: string;
+  divider_color: string;
+  container_max_width: string;
+  text_align: string;
+  card_hover_effect: string;
+  button_hover_effect: string;
+  gradient_angle: string;
+  particles_enabled: boolean;
+  particles_color: string;
+  particles_count: number;
+  particles_speed: string;
 }
 
 const defaultStyle: Omit<SectionStyle, 'id' | 'section_key'> = {
@@ -67,6 +94,33 @@ const defaultStyle: Omit<SectionStyle, 'id' | 'section_key'> = {
   badge_text: '#ffffff',
   accent_color: '#D4A574',
   custom_css: null,
+  // New defaults
+  animation_type: 'none',
+  animation_duration: '300ms',
+  animation_delay: '0ms',
+  border_width: '0',
+  border_color: '#e5e7eb',
+  border_style: 'solid',
+  font_family: 'inherit',
+  heading_font_weight: 'bold',
+  text_font_weight: 'normal',
+  letter_spacing: 'normal',
+  line_height: 'normal',
+  hover_effect: 'none',
+  overlay_color: '#000000',
+  icon_color: '#8B4513',
+  icon_size: '24px',
+  divider_style: 'none',
+  divider_color: '#e5e7eb',
+  container_max_width: 'max-w-7xl',
+  text_align: 'center',
+  card_hover_effect: 'shadow',
+  button_hover_effect: 'darken',
+  gradient_angle: '135deg',
+  particles_enabled: false,
+  particles_color: '#ffffff',
+  particles_count: 30,
+  particles_speed: 'medium',
 };
 
 export const useSectionStyles = () => {

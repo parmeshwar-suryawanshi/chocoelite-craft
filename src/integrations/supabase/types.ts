@@ -875,6 +875,9 @@ export type Database = {
       section_styles: {
         Row: {
           accent_color: string | null
+          animation_delay: string | null
+          animation_duration: string | null
+          animation_type: string | null
           background_color: string | null
           background_gradient_direction: string | null
           background_gradient_from: string | null
@@ -884,6 +887,10 @@ export type Database = {
           background_type: string | null
           badge_bg: string | null
           badge_text: string | null
+          border_color: string | null
+          border_style: string | null
+          border_width: string | null
+          button_hover_effect: string | null
           button_primary_bg: string | null
           button_primary_border_radius: string | null
           button_primary_style: string | null
@@ -895,22 +902,44 @@ export type Database = {
           card_bg: string | null
           card_border_color: string | null
           card_border_radius: string | null
+          card_hover_effect: string | null
           card_shadow: string | null
+          container_max_width: string | null
           created_at: string
           custom_css: string | null
+          divider_color: string | null
+          divider_style: string | null
+          font_family: string | null
+          gradient_angle: string | null
           heading_color: string | null
           heading_font_size: string | null
+          heading_font_weight: string | null
+          hover_effect: string | null
+          icon_color: string | null
+          icon_size: string | null
           id: string
+          letter_spacing: string | null
+          line_height: string | null
+          overlay_color: string | null
           padding_bottom: string | null
           padding_top: string | null
           padding_x: string | null
+          particles_color: string | null
+          particles_count: number | null
+          particles_enabled: boolean | null
+          particles_speed: string | null
           section_key: string
           subheading_color: string | null
+          text_align: string | null
           text_color: string | null
+          text_font_weight: string | null
           updated_at: string
         }
         Insert: {
           accent_color?: string | null
+          animation_delay?: string | null
+          animation_duration?: string | null
+          animation_type?: string | null
           background_color?: string | null
           background_gradient_direction?: string | null
           background_gradient_from?: string | null
@@ -920,6 +949,10 @@ export type Database = {
           background_type?: string | null
           badge_bg?: string | null
           badge_text?: string | null
+          border_color?: string | null
+          border_style?: string | null
+          border_width?: string | null
+          button_hover_effect?: string | null
           button_primary_bg?: string | null
           button_primary_border_radius?: string | null
           button_primary_style?: string | null
@@ -931,22 +964,44 @@ export type Database = {
           card_bg?: string | null
           card_border_color?: string | null
           card_border_radius?: string | null
+          card_hover_effect?: string | null
           card_shadow?: string | null
+          container_max_width?: string | null
           created_at?: string
           custom_css?: string | null
+          divider_color?: string | null
+          divider_style?: string | null
+          font_family?: string | null
+          gradient_angle?: string | null
           heading_color?: string | null
           heading_font_size?: string | null
+          heading_font_weight?: string | null
+          hover_effect?: string | null
+          icon_color?: string | null
+          icon_size?: string | null
           id?: string
+          letter_spacing?: string | null
+          line_height?: string | null
+          overlay_color?: string | null
           padding_bottom?: string | null
           padding_top?: string | null
           padding_x?: string | null
+          particles_color?: string | null
+          particles_count?: number | null
+          particles_enabled?: boolean | null
+          particles_speed?: string | null
           section_key: string
           subheading_color?: string | null
+          text_align?: string | null
           text_color?: string | null
+          text_font_weight?: string | null
           updated_at?: string
         }
         Update: {
           accent_color?: string | null
+          animation_delay?: string | null
+          animation_duration?: string | null
+          animation_type?: string | null
           background_color?: string | null
           background_gradient_direction?: string | null
           background_gradient_from?: string | null
@@ -956,6 +1011,10 @@ export type Database = {
           background_type?: string | null
           badge_bg?: string | null
           badge_text?: string | null
+          border_color?: string | null
+          border_style?: string | null
+          border_width?: string | null
+          button_hover_effect?: string | null
           button_primary_bg?: string | null
           button_primary_border_radius?: string | null
           button_primary_style?: string | null
@@ -967,18 +1026,37 @@ export type Database = {
           card_bg?: string | null
           card_border_color?: string | null
           card_border_radius?: string | null
+          card_hover_effect?: string | null
           card_shadow?: string | null
+          container_max_width?: string | null
           created_at?: string
           custom_css?: string | null
+          divider_color?: string | null
+          divider_style?: string | null
+          font_family?: string | null
+          gradient_angle?: string | null
           heading_color?: string | null
           heading_font_size?: string | null
+          heading_font_weight?: string | null
+          hover_effect?: string | null
+          icon_color?: string | null
+          icon_size?: string | null
           id?: string
+          letter_spacing?: string | null
+          line_height?: string | null
+          overlay_color?: string | null
           padding_bottom?: string | null
           padding_top?: string | null
           padding_x?: string | null
+          particles_color?: string | null
+          particles_count?: number | null
+          particles_enabled?: boolean | null
+          particles_speed?: string | null
           section_key?: string
           subheading_color?: string | null
+          text_align?: string | null
           text_color?: string | null
+          text_font_weight?: string | null
           updated_at?: string
         }
         Relationships: []
